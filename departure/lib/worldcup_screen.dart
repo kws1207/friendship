@@ -72,36 +72,16 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
             child: Center(
                 child: Column(
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  child: Text(
-                    topMenu.name,
-                    style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 1.5,
-                      fontSize: 36.0,
-                      fontWeight: FontWeight.normal,
-                      fontFamily: 'BMYS',
-                    ),
-                  ),
+                Text(
+                  topMenu.name,
+                ),
+                Text(
+                  topMenu.hashTags,
                 ),
                 Image(
-                  image: AssetImage(topMenu.imageLink),
-                  height: MediaQuery.of(context).size.height * 0.27,
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text(
-                    topMenu.hashTags,
-                    style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 1.5,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.normal,
-                      fontFamily: 'BMDH',
-                    ),
-                  ),
-                ),
+                    image: AssetImage(topMenu.imageLink),
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: MediaQuery.of(context).size.height * 0.3),
               ],
             ))));
   }
@@ -114,36 +94,16 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
             child: Center(
                 child: Column(
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  child: Text(
-                    bottomMenu.name,
-                    style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 1.5,
-                      fontSize: 36.0,
-                      fontWeight: FontWeight.normal,
-                      fontFamily: 'BMYS',
-                    ),
-                  ),
+                Text(
+                  bottomMenu.name,
+                ),
+                Text(
+                  bottomMenu.hashTags,
                 ),
                 Image(
-                  image: AssetImage(bottomMenu.imageLink),
-                  height: MediaQuery.of(context).size.height * 0.27,
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text(
-                    bottomMenu.hashTags,
-                    style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 1.5,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.normal,
-                      fontFamily: 'BMDH',
-                    ),
-                  ),
-                ),
+                    image: AssetImage(bottomMenu.imageLink),
+                    width: MediaQuery.of(context).size.width * 0.8,
+                    height: MediaQuery.of(context).size.height * 0.3),
               ],
             ))));
   }
@@ -153,19 +113,7 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
     topMenu = menuList.menuList[topMenuIndex];
     bottomMenu = menuList.menuList[bottomMenuIndex];
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          (currentRound == 2) ? '결승전' : (currentRound.toString() + '강'),
-          style: TextStyle(
-            color: Colors.white,
-            letterSpacing: 1.5,
-            fontSize: 24.0,
-            fontWeight: FontWeight.normal,
-            fontFamily: 'BMDH',
-          ),
-        ),
-        backgroundColor: Colors.red,
-      ),
+      appBar: AppBar(title: Text(currentRound.toString() + '강')),
       body: Stack(
         children: <Widget>[
           Container(
@@ -174,21 +122,19 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
             width: double.infinity,
           ),
           Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _topBtn(),
-                const Divider(
-                  color: Colors.red,
-                  height: 40,
-                  thickness: 10,
-                  indent: 0,
-                  endIndent: 0,
-                ),
-                _bottomBtn(),
-              ],
+            height: double.infinity,
+            child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(
+                horizontal: 40.0,
+                vertical: 80.0,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[_topBtn(), _bottomBtn()],
+              ),
             ),
-          ),
+          )
         ],
       ),
     );

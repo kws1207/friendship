@@ -14,60 +14,21 @@ class _ChampionScreenState extends State<ChampionScreen> {
   final Menu champion;
   _ChampionScreenState(this.champion);
 
-  bool _saveChampion;
-
-  @override
-  void initState() {
-    _saveChampion = true;
-  }
-
-  void navigateToSelectScreen() {
-    // TODO: 결과 저장하기 값 보내기
-    Navigator.of(context).pushReplacementNamed('/SelectScreen');
-  }
-
   Widget _buildSearchBtn() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.0),
+      padding: EdgeInsets.symmetric(vertical: 25.0),
       width: double.infinity,
       // ignore: deprecated_member_use
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () => {print("SearchBtn pressed")},
+        onPressed: () => {print("")},
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
         color: Colors.red,
         child: Text(
-          '맛집 찾아보기',
-          style: TextStyle(
-            color: Colors.white,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.normal,
-            fontFamily: 'BMDH',
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSelectScreenBtn() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.0),
-      width: double.infinity,
-      // ignore: deprecated_member_use
-      child: RaisedButton(
-        elevation: 5.0,
-        onPressed: () => {navigateToSelectScreen()},
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.red[300],
-        child: Text(
-          '처음 화면으로',
+          '맛집 찾아보기 ➔',
           style: TextStyle(
             color: Colors.white,
             letterSpacing: 1.5,
@@ -82,6 +43,7 @@ class _ChampionScreenState extends State<ChampionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(champion.name);
     return Scaffold(
       body: Stack(
         children: <Widget>[
@@ -106,57 +68,28 @@ class _ChampionScreenState extends State<ChampionScreen> {
                     width: 128,
                   ),
                   SizedBox(height: 15.0),
-                  Text(
-                    '"' + champion.name + '"',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: 'BMYS',
-                      fontSize: 84.0,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                  SizedBox(height: 40.0),
+                  Text('"' + champion.name + '"',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'BMYS',
+                        fontSize: 84.0,
+                        fontWeight: FontWeight.normal,
+                      )),
+                  SizedBox(height: 80.0),
                   Image(
                     image: AssetImage(champion.imageLink),
                     width: 400,
                   ),
                   SizedBox(height: 30.0),
-                  Text(
-                    champion.hashTags,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: 'BMDH',
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                  SizedBox(height: 60.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Checkbox(
-                        value: _saveChampion,
-                        onChanged: (value) {
-                          setState(() {
-                            _saveChampion = !_saveChampion;
-                          });
-                        },
-                        checkColor: Colors.white,
-                        activeColor: Colors.red,
-                      ),
-                      Text(
-                        '결과 저장하기',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'BMDH',
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      )
-                    ],
-                  ),
+                  Text(champion.hashTags,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'BMDH',
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.normal,
+                      )),
+                  SizedBox(height: 80.0),
                   _buildSearchBtn(),
-                  _buildSelectScreenBtn(),
                 ],
               ),
             ),
