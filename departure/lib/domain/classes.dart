@@ -9,11 +9,10 @@ class MenuList {
   List<Menu> menuList = [];
 
   MenuList(this.menuNum) {
-    menuList.add(Menu('치킨', '밀가루 #뿌링클 #고추바사삭 #허니콤보', 'assets/images/치킨.jpg'));
+    menuList.add(Menu('치킨', '#뿌링클 #고추바사삭 #허니콤보', 'assets/images/치킨.jpg'));
     menuList.add(Menu('마라요리', '#마라탕 #마라샹궈', 'assets/images/마라요리.jpg'));
     menuList.add(Menu('떡볶이', '#밀떡 #쌀떡 #오뎅볶이', 'assets/images/떡볶이.jpg'));
-    menuList
-        .add(Menu('파스타', '밀가루 #토마토 #까르보나라 #로제 #투움바', 'assets/images/파스타.jpg'));
+    menuList.add(Menu('파스타', '#토마토 #까르보나라 #로제 #투움바', 'assets/images/파스타.jpg'));
     /*
     menuList.add(Menu('리조또', '#베이컨크림 #로제 #버섯크림', 'assets/images/리조또.jpg'));
     menuList.add(Menu('피자', '#불고기 #포테이토 #콤비네이션 #고구마', 'assets/images/피자.jpg'));

@@ -32,8 +32,9 @@ class _SelectScreenState extends State<SelectScreen> {
 
   Widget _worldcupBtn() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 25.0),
+      padding: EdgeInsets.symmetric(vertical: 25.0, horizontal: 25.0),
       width: double.infinity,
+      // ignore: deprecated_member_use
       child: RaisedButton(
         elevation: 5.0,
         onPressed: () => navigationPage(),
@@ -59,49 +60,79 @@ class _SelectScreenState extends State<SelectScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        title: Text(
+          '메뉴 이상형 월드컵',
+          style: TextStyle(
+            color: Colors.white,
+            letterSpacing: 1.5,
+            fontSize: 18.0,
+            fontWeight: FontWeight.normal,
+            fontFamily: 'BMDH',
+          ),
+        ),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.list),
+              onPressed: () => {print("menu icon pressed")}),
+        ],
+        actionsIconTheme: IconThemeData(
+          color: Colors.white,
+        ),
+      ),
       body: Stack(
         children: <Widget>[
           Container(
-            color: Colors.white,
             height: double.infinity,
-            width: double.infinity,
-          ),
-          Container(
-            height: double.infinity,
-            child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.symmetric(
-                horizontal: 40.0,
-                vertical: 120.0,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("$_counter" + "강",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'BMYS',
-                          fontSize: 36.0,
-                          fontWeight: FontWeight.normal)),
-                  Row(
-                    children: <Widget>[
-                      FloatingActionButton(
-                        onPressed: _decrementCounter,
-                        tooltip: 'Decrement',
-                        child: Icon(Icons.remove),
-                      ),
-                      FloatingActionButton(
-                        onPressed: _incrementCounter,
-                        tooltip: 'Increment',
-                        child: Icon(Icons.add),
-                      ),
-                    ],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image(
+                  image: AssetImage('assets/images/trophy.png'),
+                  width: 400,
+                ),
+                SizedBox(height: 30),
+                Text(
+                  '회색 버튼을 이용하여\n\n4강부터 32강까지 선택 가능합니다.',
+                  style: TextStyle(
+                    color: Colors.black,
+                    letterSpacing: 1.5,
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'BMDH',
                   ),
-                  _worldcupBtn()
-                ],
-              ),
+                ),
+                SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    FloatingActionButton(
+                      backgroundColor: Colors.grey,
+                      onPressed: _decrementCounter,
+                      tooltip: 'Decrement',
+                      child: Icon(Icons.remove),
+                    ),
+                    SizedBox(width: 30),
+                    Text("$_counter" + "강",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'BMYS',
+                            fontSize: 84.0,
+                            fontWeight: FontWeight.normal)),
+                    SizedBox(width: 30),
+                    FloatingActionButton(
+                      backgroundColor: Colors.grey,
+                      onPressed: _incrementCounter,
+                      tooltip: 'Increment',
+                      child: Icon(Icons.add),
+                    ),
+                  ],
+                ),
+                _worldcupBtn()
+              ],
             ),
-          )
+          ),
         ],
       ),
     );
