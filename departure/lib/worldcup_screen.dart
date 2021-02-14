@@ -19,6 +19,12 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
   final int counter;
   _WorldcupScreenState(this.counter);
 
+  @override
+  void initState() {
+    currentRound = counter;
+    menuList = MenuList(counter);
+  }
+
   void navigationPage(Menu champion) {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       //new
@@ -104,8 +110,6 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    menuList = MenuList(counter);
-    currentRound = counter;
     topMenu = menuList.menuList[topMenuIndex];
     bottomMenu = menuList.menuList[bottomMenuIndex];
     return Scaffold(
