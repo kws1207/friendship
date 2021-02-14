@@ -11,9 +11,13 @@ void main() {
     routes: <String, WidgetBuilder>{
       '/LoginScreen': (BuildContext context) => LoginScreen(),
       '/SelectScreen': (BuildContext context) => SelectScreen(),
+      // ignore: missing_required_param
       '/WorldcupScreen': (BuildContext context) => WorldcupScreen(),
+      // ignore: missing_required_param
       '/ChampionScreen': (BuildContext context) => ChampionScreen()
     },
+    // title: '메뉴 이상형월드컵',
+    // theme: ThemeData.dark(),
   ));
 }
 
