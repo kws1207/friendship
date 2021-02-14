@@ -4,8 +4,14 @@ import 'package:departure/screens/login_screen.dart';
 import 'package:departure/screens/select_screen.dart';
 import 'package:departure/screens/worldcup_screen.dart';
 import 'package:departure/screens/champion_screen.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  // Disable Screen Rotation
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
   runApp(MaterialApp(
     home: SplashScreen(),
     routes: <String, WidgetBuilder>{
