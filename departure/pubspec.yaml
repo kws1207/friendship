@@ -53,10 +53,40 @@ flutter:
     - assets/logos/google.png
     - assets/logos/kakaotalk.png
     - assets/images/splash_img.jpg
-    - assets/images/chicken.jpg
-    - assets/images/tteokbokki.jpg
-    - assets/images/pasta.jpg
-    - assets/images/mara.jpg
+    - assets/images/crown.png
+    - assets/images/치킨.jpg
+    - assets/images/마라요리.jpg
+    - assets/images/떡볶이.jpg
+    - assets/images/파스타.jpg
+    
+    # - assets/images/리조또.jpg
+    # - assets/images/피자.jpg
+    # - assets/images/라멘.jpg
+    # - assets/images/족발.jpg
+    # - assets/images/고기덮밥.jpg
+    # - assets/images/감자탕.jpg
+    # - assets/images/김밥.jpg
+    # - assets/images/찜닭.jpg
+    # - assets/images/닭갈비.jpg
+    # - assets/images/곱창전골.jpg
+    # - assets/images/야채곱창.jpg
+    # - assets/images/곱창구이.jpg
+    # - assets/images/막창.jpg
+    # - assets/images/돼지고기구이.jpg
+    # - assets/images/초밥.jpg
+    # - assets/images/돈까스.jpg
+    # - assets/images/메밀소바.jpg
+    # - assets/images/카레.jpg
+    # - assets/images/함박스테이크.jpg
+    # - assets/images/중화면요리.jpg
+    # - assets/images/중화고기요리.jpg
+    # - assets/images/중화해산물요리.jpg
+    # - assets/images/회.jpg
+    # - assets/images/닭발.jpg
+    # - assets/images/아구찜.jpg
+    # - assets/images/비빔밥.jpg
+    # - assets/images/후토마키.jpg
+    # - assets/images/텐동.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

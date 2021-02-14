@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:departure/main.dart';
+import 'package:departure/worldcup_screen.dart';
 
 class SelectScreen extends StatefulWidget {
   @override
@@ -7,8 +8,26 @@ class SelectScreen extends StatefulWidget {
 }
 
 class _SelectScreenState extends State<SelectScreen> {
+  int _counter = 8;
+
+  void _incrementCounter() {
+    setState(() {
+      if (_counter <= 16) _counter *= 2;
+    });
+  }
+
+  void _decrementCounter() {
+    setState(() {
+      if (_counter >= 8) _counter ~/= 2;
+    });
+  }
+
   void navigationPage() {
-    Navigator.of(context).pushReplacementNamed('/WorldcupScreen');
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      //new
+      settings: const RouteSettings(name: '/WorldcupScreen'),
+      builder: (context) => WorldcupScreen(counter: _counter),
+    ));
   }
 
   Widget _worldcupBtn() {
@@ -58,12 +77,26 @@ class _SelectScreenState extends State<SelectScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text("32강",
+                  Text("$_counter" + "강",
                       style: TextStyle(
                           color: Colors.black,
                           fontFamily: 'BMYS',
                           fontSize: 36.0,
                           fontWeight: FontWeight.normal)),
+                  Row(
+                    children: <Widget>[
+                      FloatingActionButton(
+                        onPressed: _decrementCounter,
+                        tooltip: 'Decrement',
+                        child: Icon(Icons.remove),
+                      ),
+                      FloatingActionButton(
+                        onPressed: _incrementCounter,
+                        tooltip: 'Increment',
+                        child: Icon(Icons.add),
+                      ),
+                    ],
+                  ),
                   _worldcupBtn()
                 ],
               ),

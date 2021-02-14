@@ -3,27 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:departure/login_screen.dart';
 import 'package:departure/select_screen.dart';
 import 'package:departure/worldcup_screen.dart';
+import 'package:departure/champion_screen.dart';
 
 void main() {
-  runApp(new MaterialApp(
-    home: new SplashScreen(),
+  runApp(MaterialApp(
+    home: SplashScreen(),
     routes: <String, WidgetBuilder>{
-      '/LoginScreen': (BuildContext context) => new LoginScreen(),
-      '/SelectScreen': (BuildContext context) => new SelectScreen(),
-      '/WorldcupScreen': (BuildContext context) => new WorldcupScreen()
+      '/LoginScreen': (BuildContext context) => LoginScreen(),
+      '/SelectScreen': (BuildContext context) => SelectScreen(),
+      '/WorldcupScreen': (BuildContext context) => WorldcupScreen(),
+      '/ChampionScreen': (BuildContext context) => ChampionScreen()
     },
   ));
 }
 
 class SplashScreen extends StatefulWidget {
   @override
-  _SplashScreenState createState() => new _SplashScreenState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
   startTime() async {
-    var _duration = new Duration(seconds: 1);
-    return new Timer(_duration, navigationPage);
+    var _duration = Duration(seconds: 1);
+    return Timer(_duration, navigationPage);
   }
 
   void navigationPage() {

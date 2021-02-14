@@ -1,37 +1,60 @@
+import 'package:departure/champion_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:departure/domain/classes.dart';
 
 class WorldcupScreen extends StatefulWidget {
+  final int counter;
+
+  WorldcupScreen({Key key, @required this.counter}) : super(key: key);
+
   @override
-  _WorldcupScreenState createState() => _WorldcupScreenState();
+  _WorldcupScreenState createState() => _WorldcupScreenState(counter);
 }
 
 class _WorldcupScreenState extends State<WorldcupScreen> {
-  MenuList menuList = MenuList(4);
+  MenuList menuList;
   Menu topMenu, bottomMenu;
-  num topMenuIndex = 0, bottomMenuIndex = 1;
-  num currentRound = 4;
+  int topMenuIndex = 0, bottomMenuIndex = 1;
+  int currentRound;
+  final int counter;
+  _WorldcupScreenState(this.counter);
+
+  void navigationPage(Menu champion) {
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      //new
+      settings: const RouteSettings(name: '/ChampionScreen'),
+      builder: (context) => ChampionScreen(champion: champion),
+    ));
+  }
 
   topPressed() => setState(() {
-        if (menuList.menuList.length - 1 == bottomMenuIndex) {
+        menuList.menuList.removeAt(bottomMenuIndex);
+        topMenuIndex += 1;
+        bottomMenuIndex += 1;
+        if (menuList.menuList.length + 1 == bottomMenuIndex) {
           topMenuIndex = 0;
           bottomMenuIndex = 1;
-          currentRound /= 2;
-        } else {
-          topMenuIndex += 1;
-          bottomMenuIndex += 1;
-          menuList.menuList.removeAt(bottomMenuIndex);
+          currentRound ~/= 2;
+          if (currentRound == 1) {
+            print(menuList.menuList[0].name);
+            navigationPage(menuList.menuList[0]);
+            bottomMenuIndex = 0;
+          }
         }
       });
   bottomPressed() => setState(() {
-        if (menuList.menuList.length - 1 == bottomMenuIndex) {
+        menuList.menuList.removeAt(topMenuIndex);
+        topMenuIndex += 1;
+        bottomMenuIndex += 1;
+        if (menuList.menuList.length + 1 == bottomMenuIndex) {
           topMenuIndex = 0;
           bottomMenuIndex = 1;
-          currentRound /= 2;
-        } else {
-          topMenuIndex += 1;
-          bottomMenuIndex += 1;
-          menuList.menuList.removeAt(topMenuIndex);
+          currentRound ~/= 2;
+          if (currentRound == 1) {
+            print(menuList.menuList[0].name);
+            navigationPage(menuList.menuList[0]);
+            bottomMenuIndex = 0;
+          }
         }
       });
 
@@ -81,6 +104,8 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    menuList = MenuList(counter);
+    currentRound = counter;
     topMenu = menuList.menuList[topMenuIndex];
     bottomMenu = menuList.menuList[bottomMenuIndex];
     return Scaffold(
