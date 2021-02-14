@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:departure/domain/classes.dart';
+import 'package:departure/utilities/constants.dart';
 
 class ChampionScreen extends StatefulWidget {
   final Menu champion;
@@ -41,13 +42,7 @@ class _ChampionScreenState extends State<ChampionScreen> {
         color: Colors.red,
         child: Text(
           '맛집 찾아보기',
-          style: TextStyle(
-            color: Colors.white,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.normal,
-            fontFamily: 'BMDH',
-          ),
+          style: kWhiteLabelStyle,
         ),
       ),
     );
@@ -68,13 +63,7 @@ class _ChampionScreenState extends State<ChampionScreen> {
         color: Colors.red[300],
         child: Text(
           '처음 화면으로',
-          style: TextStyle(
-            color: Colors.white,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.normal,
-            fontFamily: 'BMDH',
-          ),
+          style: kWhiteLabelStyle,
         ),
       ),
     );
@@ -116,19 +105,17 @@ class _ChampionScreenState extends State<ChampionScreen> {
                     ),
                   ),
                   SizedBox(height: 40.0),
-                  Image(
-                    image: AssetImage(champion.imageLink),
-                    height: 200,
+                  Container(
+                    child: Image(
+                      image: AssetImage(champion.imageLink),
+                      height: 200,
+                    ),
+                    decoration: kImageShadowStyle,
                   ),
                   SizedBox(height: 30.0),
                   Text(
                     champion.hashTags,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontFamily: 'BMDH',
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.normal,
-                    ),
+                    style: kBlackLabelStyle,
                   ),
                   SizedBox(height: 60.0),
                   Row(
@@ -144,13 +131,15 @@ class _ChampionScreenState extends State<ChampionScreen> {
                         checkColor: Colors.white,
                         activeColor: Colors.red,
                       ),
-                      Text(
-                        '결과 저장하기',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'BMDH',
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.normal,
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            _saveChampion = !_saveChampion;
+                          });
+                        },
+                        child: Text(
+                          '결과 저장하기',
+                          style: kBlackLabelStyle,
                         ),
                       )
                     ],

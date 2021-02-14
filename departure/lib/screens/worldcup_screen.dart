@@ -1,6 +1,7 @@
-import 'package:departure/champion_screen.dart';
+import 'package:departure/screens/champion_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:departure/domain/classes.dart';
+import 'package:departure/utilities/constants.dart';
 
 class WorldcupScreen extends StatefulWidget {
   final int counter;
@@ -42,7 +43,6 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
           bottomMenuIndex = 1;
           currentRound ~/= 2;
           if (currentRound == 1) {
-            print(menuList.menuList[0].name);
             navigationPage(menuList.menuList[0]);
             bottomMenuIndex = 0;
           }
@@ -57,7 +57,6 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
           bottomMenuIndex = 1;
           currentRound ~/= 2;
           if (currentRound == 1) {
-            print(menuList.menuList[0].name);
             navigationPage(menuList.menuList[0]);
             bottomMenuIndex = 0;
           }
@@ -66,86 +65,68 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
 
   Widget _topBtn() {
     return InkWell(
-        onTap: () => topPressed(),
-        child: Container(
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: Center(
-                child: Column(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  child: Text(
-                    topMenu.name,
-                    style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 1.5,
-                      fontSize: 36.0,
-                      fontWeight: FontWeight.normal,
-                      fontFamily: 'BMYS',
-                    ),
-                  ),
+      onTap: () => topPressed(),
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.4,
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5),
+                child: Text(
+                  topMenu.name,
+                  style: kNameStyle,
                 ),
-                Image(
-                  image: AssetImage(topMenu.imageLink),
-                  height: MediaQuery.of(context).size.height * 0.27,
+              ),
+              Image(
+                image: AssetImage(topMenu.imageLink),
+                height: MediaQuery.of(context).size.height * 0.27,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Text(
+                  topMenu.hashTags,
+                  style: kBlackLabelStyle,
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text(
-                    topMenu.hashTags,
-                    style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 1.5,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.normal,
-                      fontFamily: 'BMDH',
-                    ),
-                  ),
-                ),
-              ],
-            ))));
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _bottomBtn() {
     return InkWell(
-        onTap: () => bottomPressed(),
-        child: Container(
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: Center(
-                child: Column(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  child: Text(
-                    bottomMenu.name,
-                    style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 1.5,
-                      fontSize: 36.0,
-                      fontWeight: FontWeight.normal,
-                      fontFamily: 'BMYS',
-                    ),
-                  ),
+      onTap: () => bottomPressed(),
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.4,
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 5),
+                child: Text(
+                  bottomMenu.name,
+                  style: kNameStyle,
                 ),
-                Image(
-                  image: AssetImage(bottomMenu.imageLink),
-                  height: MediaQuery.of(context).size.height * 0.27,
+              ),
+              Image(
+                image: AssetImage(bottomMenu.imageLink),
+                height: MediaQuery.of(context).size.height * 0.27,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Text(
+                  bottomMenu.hashTags,
+                  style: kBlackLabelStyle,
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text(
-                    bottomMenu.hashTags,
-                    style: TextStyle(
-                      color: Colors.black,
-                      letterSpacing: 1.5,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.normal,
-                      fontFamily: 'BMDH',
-                    ),
-                  ),
-                ),
-              ],
-            ))));
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -155,7 +136,9 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          (currentRound == 2) ? '결승전' : (currentRound.toString() + '강'),
+          (currentRound == 2)
+              ? '- 결승전 -'
+              : '- ' + (currentRound.toString() + '강 -'),
           style: TextStyle(
             color: Colors.white,
             letterSpacing: 1.5,

@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: <Widget>[
         Text(
           '아 이 디',
-          style: kLabelStyle,
+          style: kBlackLabelStyle,
         ),
         SizedBox(height: 10.0),
         Container(
@@ -55,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
       children: <Widget>[
         Text(
           '비 밀 번 호',
-          style: kLabelStyle,
+          style: kBlackLabelStyle,
         ),
         SizedBox(height: 10.0),
         Container(
@@ -122,13 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
         color: Colors.red,
         child: Text(
           '로그인',
-          style: TextStyle(
-            color: Colors.white,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.normal,
-            fontFamily: 'BMDH',
-          ),
+          style: kWhiteLabelStyle,
         ),
       ),
     );
@@ -148,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
         SizedBox(height: 20.0),
         Text(
           '소셜 로그인하기',
-          style: kLabelStyle,
+          style: kBlackLabelStyle,
         ),
       ],
     );

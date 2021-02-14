@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:departure/login_screen.dart';
-import 'package:departure/select_screen.dart';
-import 'package:departure/worldcup_screen.dart';
-import 'package:departure/champion_screen.dart';
+import 'package:departure/screens/login_screen.dart';
+import 'package:departure/screens/select_screen.dart';
+import 'package:departure/screens/worldcup_screen.dart';
+import 'package:departure/screens/champion_screen.dart';
 
 void main() {
   runApp(MaterialApp(

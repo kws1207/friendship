@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:departure/main.dart';
-import 'package:departure/worldcup_screen.dart';
+import 'package:departure/utilities/constants.dart';
+import 'package:departure/screens/worldcup_screen.dart';
 
 class SelectScreen extends StatefulWidget {
   @override
@@ -45,13 +45,7 @@ class _SelectScreenState extends State<SelectScreen> {
         color: Colors.red,
         child: Text(
           '월드컵 시작!',
-          style: TextStyle(
-            color: Colors.white,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.normal,
-            fontFamily: 'BMDH',
-          ),
+          style: kWhiteLabelStyle,
         ),
       ),
     );
@@ -64,13 +58,7 @@ class _SelectScreenState extends State<SelectScreen> {
         backgroundColor: Colors.red,
         title: Text(
           '메뉴 이상형 월드컵',
-          style: TextStyle(
-            color: Colors.white,
-            letterSpacing: 1.5,
-            fontSize: 18.0,
-            fontWeight: FontWeight.normal,
-            fontFamily: 'BMDH',
-          ),
+          style: kWhiteLabelStyle,
         ),
         actions: <Widget>[
           IconButton(
@@ -108,6 +96,7 @@ class _SelectScreenState extends State<SelectScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     FloatingActionButton(
+                      heroTag: "decrementBtn", // multiple heroes exception
                       backgroundColor: Colors.grey,
                       onPressed: _decrementCounter,
                       tooltip: 'Decrement',
@@ -122,6 +111,7 @@ class _SelectScreenState extends State<SelectScreen> {
                             fontWeight: FontWeight.normal)),
                     SizedBox(width: 30),
                     FloatingActionButton(
+                      heroTag: "incrementBtn", // multiple heroes exception
                       backgroundColor: Colors.grey,
                       onPressed: _incrementCounter,
                       tooltip: 'Increment',

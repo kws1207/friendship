@@ -6,10 +6,24 @@ final kHintTextStyle = TextStyle(
   fontFamily: 'BMYS',
 );
 
-final kLabelStyle = TextStyle(
+final kBlackLabelStyle = TextStyle(
   color: Colors.black,
   fontWeight: FontWeight.normal,
   fontFamily: 'BMDH',
+);
+
+final kWhiteLabelStyle = TextStyle(
+  color: Colors.white,
+  fontWeight: FontWeight.normal,
+  fontFamily: 'BMDH',
+);
+
+final kNameStyle = TextStyle(
+  color: Colors.black,
+  letterSpacing: 1.5,
+  fontSize: 36.0,
+  fontWeight: FontWeight.normal,
+  fontFamily: 'BMYS',
 );
 
 final kBoxDecorationStyle = BoxDecoration(
@@ -20,6 +34,16 @@ final kBoxDecorationStyle = BoxDecoration(
       color: Colors.black12,
       blurRadius: 6.0,
       offset: Offset(0, 2),
+    ),
+  ],
+);
+
+final kImageShadowStyle = BoxDecoration(
+  boxShadow: [
+    BoxShadow(
+      color: Colors.black45,
+      blurRadius: 10.0,
+      offset: Offset(2, 4),
     ),
   ],
 );
