@@ -76,11 +76,13 @@ class _SelectScreenState extends State<SelectScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Image(
-                  image: AssetImage('assets/images/trophy.png'),
-                  width: 400,
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.35,
+                  child: Image(
+                    image: AssetImage('assets/images/trophy.png'),
+                  ),
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                 Text(
                   '회색 버튼을 이용하여\n\n4강부터 32강까지 선택 가능합니다.',
                   style: TextStyle(
@@ -91,7 +93,7 @@ class _SelectScreenState extends State<SelectScreen> {
                     fontFamily: 'BMDH',
                   ),
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -102,14 +104,14 @@ class _SelectScreenState extends State<SelectScreen> {
                       tooltip: 'Decrement',
                       child: Icon(Icons.remove),
                     ),
-                    SizedBox(width: 30),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
                     Text("$_counter" + "강",
                         style: TextStyle(
                             color: Colors.black,
                             fontFamily: 'BMYS',
                             fontSize: 84.0,
                             fontWeight: FontWeight.normal)),
-                    SizedBox(width: 30),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
                     FloatingActionButton(
                       heroTag: "incrementBtn", // multiple heroes exception
                       backgroundColor: Colors.grey,

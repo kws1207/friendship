@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Container(
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
-          height: 60.0,
+          height: MediaQuery.of(context).size.height * 0.07,
           child: TextField(
             controller: emailControler,
             keyboardType: TextInputType.emailAddress,
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Container(
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
-          height: 60.0,
+          height: MediaQuery.of(context).size.height * 0.07,
           child: TextField(
             controller: passwordControler,
             obscureText: true,
@@ -102,7 +102,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildLoginBtn() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 25.0),
+      padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.height * 0.03),
       width: double.infinity,
       // ignore: deprecated_member_use
       child: RaisedButton(
@@ -152,8 +153,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 60.0,
-        width: 60.0,
+        height: MediaQuery.of(context).size.height * 0.06,
+        width: MediaQuery.of(context).size.height * 0.06,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Colors.white,
@@ -174,7 +175,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildSocialBtnRow() {
     return Padding(
-      padding: EdgeInsets.only(top: 25.0, bottom: 35.0),
+      padding: EdgeInsets.only(
+        top: MediaQuery.of(context).size.height * 0.05,
+        bottom: MediaQuery.of(context).size.height * 0.05,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -259,8 +263,8 @@ class _LoginScreenState extends State<LoginScreen> {
             child: SingleChildScrollView(
               physics: NeverScrollableScrollPhysics(),
               padding: EdgeInsets.symmetric(
-                horizontal: 40.0,
-                vertical: 120.0,
+                horizontal: MediaQuery.of(context).size.height * 0.05,
+                vertical: MediaQuery.of(context).size.height * 0.11,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -274,16 +278,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontWeight: FontWeight.normal,
                     ),
                   ),
-                  SizedBox(height: 30.0),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   _buildEmailTF(),
-                  SizedBox(height: 30.0),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   _buildPasswordTF(),
                   _buildForgotPasswordBtn(),
                   _buildLoginBtn(),
-                  SizedBox(height: 20),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   _buildSignInWithText(),
                   _buildSocialBtnRow(),
-                  SizedBox(height: 20),
+                  // SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                   _buildSignupBtn(),
                 ],
               ),

@@ -94,30 +94,30 @@ class _ChampionScreenState extends State<ChampionScreen> {
                     image: AssetImage('assets/images/crown.png'),
                     width: 128,
                   ),
-                  SizedBox(height: 15.0),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.025),
                   Text(
                     '"' + champion.name + '"',
                     style: TextStyle(
                       color: Colors.black,
                       fontFamily: 'BMYS',
-                      fontSize: 84.0,
+                      fontSize: MediaQuery.of(context).size.height * 0.08,
                       fontWeight: FontWeight.normal,
                     ),
                   ),
-                  SizedBox(height: 40.0),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                   Container(
                     child: Image(
                       image: AssetImage(champion.imageLink),
-                      height: 200,
+                      height: MediaQuery.of(context).size.height * 0.25,
                     ),
                     decoration: kImageShadowStyle,
                   ),
-                  SizedBox(height: 30.0),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                   Text(
                     champion.hashTags,
                     style: kBlackLabelStyle,
                   ),
-                  SizedBox(height: 60.0),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[

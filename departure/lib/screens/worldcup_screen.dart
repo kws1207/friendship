@@ -83,7 +83,8 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
                 height: MediaQuery.of(context).size.height * 0.27,
               ),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 20),
+                padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height * 0.02),
                 child: Text(
                   topMenu.hashTags,
                   style: kBlackLabelStyle,
@@ -116,7 +117,8 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
                 height: MediaQuery.of(context).size.height * 0.27,
               ),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 20),
+                padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height * 0.02),
                 child: Text(
                   bottomMenu.hashTags,
                   style: kBlackLabelStyle,
@@ -163,8 +165,8 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
                 _topBtn(),
                 const Divider(
                   color: Colors.red,
-                  height: 40,
-                  thickness: 10,
+                  height: 30,
+                  thickness: 7,
                   indent: 0,
                   endIndent: 0,
                 ),
