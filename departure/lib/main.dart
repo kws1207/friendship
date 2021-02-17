@@ -1,75 +1,63 @@
-// Copyright 2018 The Flutter team. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
+import 'package:departure/screens/login_screen.dart';
+import 'package:departure/screens/select_screen.dart';
+import 'package:departure/screens/worldcup_screen.dart';
+import 'package:departure/screens/champion_screen.dart';
+import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  // Disable Screen Rotation
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-// #docregion MyApp
-class MyApp extends StatelessWidget {
-  // #docregion build
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Startup Name Generator?',
-      home: RandomWords(),
-    );
-  }
-  // #enddocregion build
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  runApp(MaterialApp(
+    home: SplashScreen(),
+    routes: <String, WidgetBuilder>{
+      '/LoginScreen': (BuildContext context) => LoginScreen(),
+      '/SelectScreen': (BuildContext context) => SelectScreen(),
+      // ignore: missing_required_param
+      '/WorldcupScreen': (BuildContext context) => WorldcupScreen(),
+      // ignore: missing_required_param
+      '/ChampionScreen': (BuildContext context) => ChampionScreen()
+    },
+    // title: '메뉴 이상형월드컵',
+    // theme: ThemeData.dark(),
+  ));
 }
-// #enddocregion MyApp
 
-// #docregion RWS-var
-class _RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-  final _biggerFont = TextStyle(fontSize: 18.0);
-  // #enddocregion RWS-var
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
 
-  // #docregion _buildSuggestions
-  Widget _buildSuggestions() {
-    return ListView.builder(
-        padding: EdgeInsets.all(16.0),
-        itemBuilder: /*1*/ (context, i) {
-          if (i.isOdd) return Divider(); /*2*/
-
-          final index = i ~/ 2; /*3*/
-          if (index >= _suggestions.length) {
-            _suggestions.addAll(generateWordPairs().take(10)); /*4*/
-          }
-          return _buildRow(_suggestions[index]);
-        });
+class _SplashScreenState extends State<SplashScreen> {
+  startTime() async {
+    var _duration = Duration(seconds: 1);
+    return Timer(_duration, navigationPage);
   }
-  // #enddocregion _buildSuggestions
 
-  // #docregion _buildRow
-  Widget _buildRow(WordPair pair) {
-    return ListTile(
-      title: Text(
-        pair.asPascalCase,
-        style: _biggerFont,
-      ),
-    );
+  void navigationPage() {
+    Navigator.of(context).pushReplacementNamed('/LoginScreen');
   }
-  // #enddocregion _buildRow
 
-  // #docregion RWS-build
+  @override
+  void initState() {
+    super.initState();
+    startTime();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Startup Name Generator'),
+      body: Center(
+        child: Image.asset('assets/images/splash_img.jpeg'),
       ),
-      body: _buildSuggestions(),
     );
   }
-  // #enddocregion RWS-build
-  // #docregion RWS-var
-}
-// #enddocregion RWS-var
-
-class RandomWords extends StatefulWidget {
-  @override
-  State<RandomWords> createState() => _RandomWordsState();
 }
