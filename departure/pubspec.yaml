@@ -23,6 +23,15 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  csv: ^4.1.0
+  csv_reader: ^1.0.2
+  firebase_core: ^0.7.0
+  firebase_auth: ^0.20.0+1
+  firebase_crashlytics: ^0.4.0+1
+  provider: ^4.3.3
+  shared_preferences: ^0.5.12+4
+  logger: ^0.9.4
+  google_sign_in: ^4.5.9
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -52,45 +61,80 @@ flutter:
     - assets/logos/facebook.png
     - assets/logos/google.png
     - assets/logos/kakaotalk.png
-    - assets/images/splash_img.jpg
+    - assets/images/splash_img.jpeg
     - assets/images/trophy.png
     - assets/images/crown.png
-    - assets/images/치킨.jpg
-    - assets/images/마라요리.jpg
-    - assets/images/떡볶이.jpg
-    - assets/images/파스타.jpg
-    
-    # - assets/images/리조또.jpg
-    # - assets/images/피자.jpg
-    # - assets/images/라멘.jpg
-    # - assets/images/족발.jpg
-    # - assets/images/고기덮밥.jpg
-    # - assets/images/감자탕.jpg
-    # - assets/images/김밥.jpg
-    # - assets/images/찜닭.jpg
-    # - assets/images/닭갈비.jpg
-    # - assets/images/곱창전골.jpg
-    # - assets/images/야채곱창.jpg
-    # - assets/images/곱창구이.jpg
-    # - assets/images/막창.jpg
-    # - assets/images/돼지고기구이.jpg
-    # - assets/images/초밥.jpg
-    # - assets/images/돈까스.jpg
-    # - assets/images/메밀소바.jpg
-    # - assets/images/카레.jpg
-    # - assets/images/함박스테이크.jpg
-    # - assets/images/중화면요리.jpg
-    # - assets/images/중화고기요리.jpg
-    # - assets/images/중화해산물요리.jpg
-    # - assets/images/회.jpg
-    # - assets/images/닭발.jpg
-    # - assets/images/아구찜.jpg
-    # - assets/images/비빔밥.jpg
-    # - assets/images/후토마키.jpg
-    # - assets/images/텐동.jpg
+    - assets/images/치킨.jpeg
+    - assets/images/마라요리.jpeg
+    - assets/images/떡볶이.jpeg
+    - assets/images/파스타.jpeg
+    #- assets/images/족발.jpeg
+    #- assets/images/대창덮밥.jpeg
+    #- assets/images/감자탕.jpeg
+    #- assets/images/찜닭.jpeg
+    #- assets/images/닭갈비.jpeg
+    #- assets/images/곱창전골.jpeg
+    - assets/images/야채곱창.jpeg
+    - assets/images/곱창구이.jpeg
+    #- assets/images/막창.jpeg
+    #- assets/images/돼지고기구이.jpeg
+    #- assets/images/닭도리탕.jpeg
+    #- assets/images/양대창.jpeg
+    #- assets/images/순두부찌개.jpeg
+    #- assets/images/떡국.jpeg
+    #- assets/images/김치찌개.jpeg
+    #- assets/images/된장찌개.jpeg
+    #- assets/images/부대찌개.jpeg
+    #- assets/images/쪽갈비.jpeg
+    - assets/images/알탕.jpeg
+    #- assets/images/대구탕.jpeg
+    #- assets/images/조개구이.jpeg
+    #- assets/images/낙곱새.jpeg
+    #- assets/images/장어.jpeg
+    #- assets/images/삼계탕.jpeg
+    #- assets/images/불고기.jpeg
+    #- assets/images/복어.jpeg
+    #- assets/images/해장국.jpeg
+    #- assets/images/콩나물국밥.jpeg
+    #- assets/images/오리고기.jpeg
+    #- assets/images/옛날통닭.jpeg
+    #- assets/images/해물탕.jpeg
+    #- assets/images/닭발.jpeg
+    - assets/images/아구찜.jpeg
+    #- assets/images/비빔밥.jpeg
+    - assets/images/칼국수.jpeg
+    #- assets/images/육개장.jpeg
+    - assets/images/죽.jpeg
+    #- assets/images/육회.jpeg
+    #- assets/images/소국밥.jpeg
+    #- assets/images/돼지국밥.jpeg
+    #- assets/images/갈비탕.jpeg
+    #- assets/images/설렁탕.jpeg
+    #- assets/images/냉면.jpeg
+    #- assets/images/갈비찜.jpeg
+    #- assets/images/김치찜.jpeg
+    #- assets/images/짜글이.jpeg
+    #- assets/images/게장.jpeg
+    #- assets/images/제육볶음.jpeg
+    #- assets/images/바베큐치킨.jpeg
+    #- assets/images/쌈밥집.jpeg
+    #- assets/images/한정식.jpeg
+    #- assets/images/밀면.jpeg
+    #- assets/images/콩국수.jpeg
+    #- assets/images/조개찜.jpeg
+    #- assets/images/물회.jpeg
+    #- assets/images/가정식백반.jpeg
+    #- assets/images/돼지주물럭.jpeg
+    #- assets/images/잔치국수.jpeg
+    #- assets/images/수제비.jpeg
+    #- assets/images/쭈꾸미.jpeg
+    #- assets/images/전.jpeg
+    #- assets/images/묵요리.jpeg
+    #- assets/images/소고기구이.jpeg
+    #- assets/images/떡갈비.jpeg
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware.
+    # # An image asset can refer to one or more resolution-specific "variants", see
+  # #https://flutter.dev/assets-and-images/#resolution-aware.
 
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages

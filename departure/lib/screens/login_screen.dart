@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:departure/utilities/constants.dart';
-import 'package:departure/main.dart';
+import 'package:departure/firebase/auth.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,8 +9,8 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   // bool _rememberMe = false;
-  final emailControler = TextEditingController();
-  final passwordControler = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   void navigationPage() {
     Navigator.of(context).pushReplacementNamed('/SelectScreen');
@@ -30,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: kBoxDecorationStyle,
           height: MediaQuery.of(context).size.height * 0.07,
           child: TextField(
-            controller: emailControler,
+            controller: emailController,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(color: Colors.red),
             decoration: InputDecoration(
@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
           decoration: kBoxDecorationStyle,
           height: MediaQuery.of(context).size.height * 0.07,
           child: TextField(
-            controller: passwordControler,
+            controller: passwordController,
             obscureText: true,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(color: Colors.red),
@@ -103,18 +103,20 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildLoginBtn() {
     return Container(
       padding: EdgeInsets.symmetric(
-          vertical: MediaQuery.of(context).size.height * 0.03),
+          vertical: MediaQuery.of(context).size.height * 0.02),
       width: double.infinity,
       // ignore: deprecated_member_use
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () => {
-          print('ID:' +
-              emailControler.text +
-              ' / ' +
-              'PWD:' +
-              passwordControler.text),
-          navigationPage()
+        onPressed: () async {
+          await AuthService()
+              .signInWithEmailAndPassword(
+                emailController.text,
+                passwordController.text,
+              )
+              .then(
+                (_) => navigationPage(),
+              );
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -140,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
             fontWeight: FontWeight.w400,
           ),
         ),
-        SizedBox(height: 20.0),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.02),
         Text(
           '소셜 로그인하기',
           style: kBlackLabelStyle,
@@ -207,7 +209,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildSignupBtn() {
     return GestureDetector(
-      onTap: () => print('Sign Up Button Pressed'),
+      onTap: () async {
+        await AuthService()
+            .signUpWithEmailAndPassword(
+              emailController.text,
+              passwordController.text,
+            )
+            .then(
+              (_) => navigationPage(),
+            );
+      },
       child: RichText(
         text: TextSpan(
           children: [
@@ -216,7 +227,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(
                 color: Colors.black,
                 fontFamily: 'BMYS',
-                fontSize: 24.0,
+                fontSize: MediaQuery.of(context).size.width * 0.06,
                 fontWeight: FontWeight.w400,
               ),
             ),
@@ -225,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
               style: TextStyle(
                 color: Colors.black,
                 fontFamily: 'BMDH',
-                fontSize: 22.0,
+                fontSize: MediaQuery.of(context).size.width * 0.06,
                 fontWeight: FontWeight.normal,
               ),
             ),
@@ -241,30 +252,13 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Stack(
         children: <Widget>[
           Container(
-            color: Colors.white,
-            height: double.infinity,
-            width: double.infinity,
-            /* decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Color(0xFF73AEF5),
-                  Color(0xFF61A4F1),
-                  Color(0xFF478DE0),
-                  Color(0xFF398AE5),
-                ],
-                stops: [0.1, 0.4, 0.7, 0.9],
-              ),
-            ), */
-          ),
-          Container(
+            alignment: Alignment.center,
             height: double.infinity,
             child: SingleChildScrollView(
               physics: NeverScrollableScrollPhysics(),
               padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.height * 0.05,
-                vertical: MediaQuery.of(context).size.height * 0.11,
+                vertical: MediaQuery.of(context).size.height * 0.09,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -274,7 +268,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(
                       color: Colors.black,
                       fontFamily: 'BMYS',
-                      fontSize: 36.0,
+                      fontSize: MediaQuery.of(context).size.height * 0.05,
                       fontWeight: FontWeight.normal,
                     ),
                   ),

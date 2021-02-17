@@ -5,11 +5,21 @@ import 'package:departure/utilities/constants.dart';
 
 class WorldcupScreen extends StatefulWidget {
   final int counter;
+  final bool korean, bunsik, japanese, western, chinese;
 
-  WorldcupScreen({Key key, @required this.counter}) : super(key: key);
+  WorldcupScreen({
+    Key key,
+    @required this.counter,
+    @required this.korean,
+    @required this.bunsik,
+    @required this.japanese,
+    @required this.western,
+    @required this.chinese,
+  }) : super(key: key);
 
   @override
-  _WorldcupScreenState createState() => _WorldcupScreenState(counter);
+  _WorldcupScreenState createState() =>
+      _WorldcupScreenState(counter, korean, bunsik, japanese, western, chinese);
 }
 
 class _WorldcupScreenState extends State<WorldcupScreen> {
@@ -18,12 +28,14 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
   int topMenuIndex = 0, bottomMenuIndex = 1;
   int currentRound;
   final int counter;
-  _WorldcupScreenState(this.counter);
+  final bool korean, bunsik, japanese, western, chinese;
+  _WorldcupScreenState(this.counter, this.korean, this.bunsik, this.japanese,
+      this.western, this.chinese);
 
   @override
   void initState() {
     currentRound = counter;
-    menuList = MenuList(counter);
+    menuList = MenuList(counter, true, true, true, true);
   }
 
   void navigationPage(Menu champion) {
@@ -67,27 +79,41 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
     return InkWell(
       onTap: () => topPressed(),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.4,
+        height: MediaQuery.of(context).size.height * 0.38,
         child: Center(
           child: Column(
             children: <Widget>[
               Container(
-                padding: EdgeInsets.symmetric(vertical: 5),
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.height * 0.01,
+                ),
                 child: Text(
                   topMenu.name,
-                  style: kNameStyle,
+                  style: TextStyle(
+                    color: Colors.black,
+                    letterSpacing: 1.5,
+                    fontSize: MediaQuery.of(context).size.height * 0.05,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'BMYS',
+                  ),
                 ),
               ),
               Image(
                 image: AssetImage(topMenu.imageLink),
-                height: MediaQuery.of(context).size.height * 0.27,
+                height: MediaQuery.of(context).size.height * 0.25,
               ),
               Container(
-                padding: EdgeInsets.symmetric(
-                    vertical: MediaQuery.of(context).size.height * 0.02),
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * 0.02),
                 child: Text(
                   topMenu.hashTags,
-                  style: kBlackLabelStyle,
+                  style: TextStyle(
+                    color: Colors.black,
+                    letterSpacing: 0,
+                    fontSize: MediaQuery.of(context).size.height * 0.02,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'BMDH',
+                  ),
                 ),
               ),
             ],
@@ -101,27 +127,43 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
     return InkWell(
       onTap: () => bottomPressed(),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.4,
+        height: MediaQuery.of(context).size.height * 0.42,
         child: Center(
           child: Column(
             children: <Widget>[
+              SizedBox(height: MediaQuery.of(context).size.height * 0.01),
               Container(
-                padding: EdgeInsets.symmetric(vertical: 5),
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.height * 0.01,
+                  bottom: MediaQuery.of(context).size.height * 0.01,
+                ),
                 child: Text(
                   bottomMenu.name,
-                  style: kNameStyle,
+                  style: TextStyle(
+                    color: Colors.black,
+                    letterSpacing: 1.5,
+                    fontSize: MediaQuery.of(context).size.height * 0.05,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'BMYS',
+                  ),
                 ),
               ),
               Image(
                 image: AssetImage(bottomMenu.imageLink),
-                height: MediaQuery.of(context).size.height * 0.27,
+                height: MediaQuery.of(context).size.height * 0.25,
               ),
               Container(
-                padding: EdgeInsets.symmetric(
-                    vertical: MediaQuery.of(context).size.height * 0.02),
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * 0.03),
                 child: Text(
                   bottomMenu.hashTags,
-                  style: kBlackLabelStyle,
+                  style: TextStyle(
+                    color: Colors.black,
+                    letterSpacing: 0,
+                    fontSize: MediaQuery.of(context).size.height * 0.02,
+                    fontWeight: FontWeight.normal,
+                    fontFamily: 'BMDH',
+                  ),
                 ),
               ),
             ],
@@ -154,21 +196,16 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
       body: Stack(
         children: <Widget>[
           Container(
-            color: Colors.white,
-            height: double.infinity,
-            width: double.infinity,
-          ),
-          Container(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 _topBtn(),
                 const Divider(
                   color: Colors.red,
-                  height: 30,
-                  thickness: 7,
-                  indent: 0,
-                  endIndent: 0,
+                  height: 20,
+                  thickness: 5,
+                  indent: 20,
+                  endIndent: 20,
                 ),
                 _bottomBtn(),
               ],

@@ -9,6 +9,16 @@ class SelectScreen extends StatefulWidget {
 
 class _SelectScreenState extends State<SelectScreen> {
   int _counter = 8;
+  bool korean, bunsik, japanese, western, chinese;
+
+  @override
+  void initState() {
+    korean = true;
+    bunsik = true;
+    japanese = true;
+    western = true;
+    chinese = true;
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -26,7 +36,13 @@ class _SelectScreenState extends State<SelectScreen> {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       //new
       settings: const RouteSettings(name: '/WorldcupScreen'),
-      builder: (context) => WorldcupScreen(counter: _counter),
+      builder: (context) => WorldcupScreen(
+          counter: _counter,
+          korean: korean,
+          bunsik: bunsik,
+          japanese: japanese,
+          western: western,
+          chinese: chinese),
     ));
   }
 
@@ -48,6 +64,181 @@ class _SelectScreenState extends State<SelectScreen> {
           style: kWhiteLabelStyle,
         ),
       ),
+    );
+  }
+
+  Widget _koreanCheckBox() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Checkbox(
+          value: korean,
+          onChanged: (value) {
+            setState(() {
+              korean = !korean;
+            });
+          },
+          checkColor: Colors.white,
+          activeColor: Colors.red,
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              korean = !korean;
+            });
+          },
+          child: Text(
+            '한식',
+            style: kBlackLabelStyle,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _bunsikCheckBox() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Checkbox(
+          value: bunsik,
+          onChanged: (value) {
+            setState(() {
+              bunsik = bunsik;
+            });
+          },
+          checkColor: Colors.white,
+          activeColor: Colors.red,
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              bunsik = bunsik;
+            });
+          },
+          child: Text(
+            '분식',
+            style: kBlackLabelStyle,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _japaneseCheckBox() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Checkbox(
+          value: japanese,
+          onChanged: (value) {
+            setState(() {
+              japanese = !japanese;
+            });
+          },
+          checkColor: Colors.white,
+          activeColor: Colors.red,
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              japanese = !japanese;
+            });
+          },
+          child: Text(
+            '일본음식',
+            style: kBlackLabelStyle,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _westernCheckBox() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Checkbox(
+          value: western,
+          onChanged: (value) {
+            setState(() {
+              western = !western;
+            });
+          },
+          checkColor: Colors.white,
+          activeColor: Colors.red,
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              western = !western;
+            });
+          },
+          child: Text(
+            '아시안 / 양식',
+            style: kBlackLabelStyle,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _chineseCheckBox() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Checkbox(
+          value: chinese,
+          onChanged: (value) {
+            setState(() {
+              chinese = !chinese;
+            });
+          },
+          checkColor: Colors.white,
+          activeColor: Colors.red,
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              chinese = !chinese;
+            });
+          },
+          child: Text(
+            '중국음식 (마라요리, 훠궈 등 포함)',
+            style: kBlackLabelStyle,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _buildSelectRoundRow() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        FloatingActionButton(
+          heroTag: "decrementBtn", // multiple heroes exception
+          backgroundColor: Colors.grey,
+          onPressed: _decrementCounter,
+          tooltip: 'Decrement',
+          child: Icon(Icons.remove),
+        ),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+        Text("$_counter" + "강",
+            style: TextStyle(
+                color: Colors.black,
+                fontFamily: 'BMYS',
+                fontSize: 84.0,
+                fontWeight: FontWeight.normal)),
+        SizedBox(width: MediaQuery.of(context).size.width * 0.1),
+        FloatingActionButton(
+          heroTag: "incrementBtn", // multiple heroes exception
+          backgroundColor: Colors.grey,
+          onPressed: _incrementCounter,
+          tooltip: 'Increment',
+          child: Icon(Icons.add),
+        ),
+      ],
     );
   }
 
@@ -77,9 +268,17 @@ class _SelectScreenState extends State<SelectScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Container(
-                  height: MediaQuery.of(context).size.height * 0.35,
-                  child: Image(
-                    image: AssetImage('assets/images/trophy.png'),
+                  padding: EdgeInsets.only(
+                      left: MediaQuery.of(context).size.width * 0.05,
+                      bottom: MediaQuery.of(context).size.height * 0.05),
+                  child: Column(
+                    children: <Widget>[
+                      _koreanCheckBox(),
+                      _bunsikCheckBox(),
+                      _japaneseCheckBox(),
+                      _westernCheckBox(),
+                      _chineseCheckBox(),
+                    ],
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.05),
@@ -94,34 +293,8 @@ class _SelectScreenState extends State<SelectScreen> {
                   ),
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    FloatingActionButton(
-                      heroTag: "decrementBtn", // multiple heroes exception
-                      backgroundColor: Colors.grey,
-                      onPressed: _decrementCounter,
-                      tooltip: 'Decrement',
-                      child: Icon(Icons.remove),
-                    ),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
-                    Text("$_counter" + "강",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'BMYS',
-                            fontSize: 84.0,
-                            fontWeight: FontWeight.normal)),
-                    SizedBox(width: MediaQuery.of(context).size.width * 0.1),
-                    FloatingActionButton(
-                      heroTag: "incrementBtn", // multiple heroes exception
-                      backgroundColor: Colors.grey,
-                      onPressed: _incrementCounter,
-                      tooltip: 'Increment',
-                      child: Icon(Icons.add),
-                    ),
-                  ],
-                ),
-                _worldcupBtn()
+                _buildSelectRoundRow(),
+                _worldcupBtn(),
               ],
             ),
           ),

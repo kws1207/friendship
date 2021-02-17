@@ -5,12 +5,16 @@ import 'package:departure/screens/select_screen.dart';
 import 'package:departure/screens/worldcup_screen.dart';
 import 'package:departure/screens/champion_screen.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
   // Disable Screen Rotation
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   runApp(MaterialApp(
     home: SplashScreen(),
@@ -52,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Image.asset('assets/images/splash_img.jpg'),
+        child: Image.asset('assets/images/splash_img.jpeg'),
       ),
     );
   }

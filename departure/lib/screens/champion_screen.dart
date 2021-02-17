@@ -86,7 +86,7 @@ class _ChampionScreenState extends State<ChampionScreen> {
               physics: NeverScrollableScrollPhysics(),
               padding: EdgeInsets.symmetric(
                 horizontal: 40.0,
-                vertical: 80.0,
+                vertical: MediaQuery.of(context).size.height * 0.07,
               ),
               child: Column(
                 children: <Widget>[
