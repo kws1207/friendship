@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:departure/utilities/constants.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:departure/firebase/auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+final FirebaseAuth auth = FirebaseAuth.instance;
+final GoogleSignIn googleSignIn = GoogleSignIn();
+
+String name;
+String email;
+String imageUrl;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,6 +21,24 @@ class _LoginScreenState extends State<LoginScreen> {
   // bool _rememberMe = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  Future<User> _googleSignIn() async {
+    await Firebase.initializeApp();
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      idToken: googleSignInAuthentication.idToken,
+      accessToken: googleSignInAuthentication.accessToken,
+    );
+    User user = (await auth.signInWithCredential(credential)).user;
+    if (user != null) {
+      name = user.displayName;
+      email = user.email;
+      imageUrl = user.photoURL;
+    }
+    return user;
+  }
 
   void navigationPage() {
     Navigator.of(context).pushReplacementNamed('/SelectScreen');
@@ -197,7 +225,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
           _buildSocialBtn(
-            () => print('Login with Google'),
+            () {
+              _googleSignIn()
+                  .whenComplete(() => navigationPage())
+                  .catchError((onError) {
+                print(onError);
+              });
+            },
             AssetImage(
               'assets/logos/google.png',
             ),
