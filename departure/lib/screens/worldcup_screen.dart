@@ -5,37 +5,30 @@ import 'package:departure/utilities/constants.dart';
 
 class WorldcupScreen extends StatefulWidget {
   final int counter;
-  final bool korean, bunsik, japanese, western, chinese;
+  final List<Menu> menuList;
 
   WorldcupScreen({
     Key key,
     @required this.counter,
-    @required this.korean,
-    @required this.bunsik,
-    @required this.japanese,
-    @required this.western,
-    @required this.chinese,
+    @required this.menuList,
   }) : super(key: key);
 
   @override
-  _WorldcupScreenState createState() =>
-      _WorldcupScreenState(counter, korean, bunsik, japanese, western, chinese);
+  _WorldcupScreenState createState() => _WorldcupScreenState(counter, menuList);
 }
 
 class _WorldcupScreenState extends State<WorldcupScreen> {
-  MenuList menuList;
+  List<Menu> _menuList, menuList;
   Menu topMenu, bottomMenu;
   int topMenuIndex = 0, bottomMenuIndex = 1;
   int currentRound;
   final int counter;
-  final bool korean, bunsik, japanese, western, chinese;
-  _WorldcupScreenState(this.counter, this.korean, this.bunsik, this.japanese,
-      this.western, this.chinese);
+  _WorldcupScreenState(this.counter, this.menuList);
 
   @override
   void initState() {
     currentRound = counter;
-    menuList = MenuList(counter, true, true, true, true);
+    _menuList = menuList;
   }
 
   void navigationPage(Menu champion) {
@@ -47,29 +40,29 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
   }
 
   topPressed() => setState(() {
-        menuList.menuList.removeAt(bottomMenuIndex);
+        _menuList.removeAt(bottomMenuIndex);
         topMenuIndex += 1;
         bottomMenuIndex += 1;
-        if (menuList.menuList.length + 1 == bottomMenuIndex) {
+        if (_menuList.length + 1 == bottomMenuIndex) {
           topMenuIndex = 0;
           bottomMenuIndex = 1;
           currentRound ~/= 2;
           if (currentRound == 1) {
-            navigationPage(menuList.menuList[0]);
+            navigationPage(_menuList[0]);
             bottomMenuIndex = 0;
           }
         }
       });
   bottomPressed() => setState(() {
-        menuList.menuList.removeAt(topMenuIndex);
+        _menuList.removeAt(topMenuIndex);
         topMenuIndex += 1;
         bottomMenuIndex += 1;
-        if (menuList.menuList.length + 1 == bottomMenuIndex) {
+        if (_menuList.length + 1 == bottomMenuIndex) {
           topMenuIndex = 0;
           bottomMenuIndex = 1;
           currentRound ~/= 2;
           if (currentRound == 1) {
-            navigationPage(menuList.menuList[0]);
+            navigationPage(_menuList[0]);
             bottomMenuIndex = 0;
           }
         }
@@ -175,8 +168,8 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    topMenu = menuList.menuList[topMenuIndex];
-    bottomMenu = menuList.menuList[bottomMenuIndex];
+    topMenu = _menuList[topMenuIndex];
+    bottomMenu = _menuList[bottomMenuIndex];
     return Scaffold(
       appBar: AppBar(
         title: Text(

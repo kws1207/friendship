@@ -1,9 +1,11 @@
+import 'package:departure/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:departure/utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:departure/firebase/auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:departure/screens/signup_screen.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -12,12 +14,12 @@ String name;
 String email;
 String imageUrl;
 
-class LoginScreen extends StatefulWidget {
+class SignInScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _SignInScreenState createState() => _SignInScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignInScreenState extends State<SignInScreen> {
   // bool _rememberMe = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -42,6 +44,33 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void navigationPage() {
     Navigator.of(context).pushReplacementNamed('/SelectScreen');
+  }
+
+  void pushSignUpPage() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => SignUpScreen()));
+  }
+
+  void _showDialog(dynamic error) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Text("ㅠㅠ"),
+          content: Text(error.toString()),
+          actions: <Widget>[
+            // ignore: deprecated_member_use
+            FlatButton(
+              child: Text("Close"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildEmailTF() {
@@ -114,6 +143,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildForgotPasswordBtn() {
     return Container(
       alignment: Alignment.centerRight,
+      // ignore: deprecated_member_use
       child: FlatButton(
         onPressed: () => print('Forgot Password Button Pressed'),
         padding: EdgeInsets.only(right: 0.0),
@@ -128,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _buildLoginBtn() {
+  Widget _buildSignInBtn() {
     return Container(
       padding: EdgeInsets.symmetric(
           vertical: MediaQuery.of(context).size.height * 0.02),
@@ -144,6 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
               )
               .then(
                 (_) => navigationPage(),
+                onError: (error) => _showDialog(error),
               );
         },
         padding: EdgeInsets.all(15.0),
@@ -207,21 +238,14 @@ class _LoginScreenState extends State<LoginScreen> {
     return Padding(
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).size.height * 0.05,
-        bottom: MediaQuery.of(context).size.height * 0.05,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           _buildSocialBtn(
-            () => print('Login with Kakaotalk'),
+            () => print('SignIn with Apple'),
             AssetImage(
-              'assets/logos/kakaotalk.png',
-            ),
-          ),
-          _buildSocialBtn(
-            () => print('Login with Facebook'),
-            AssetImage(
-              'assets/logos/facebook.png',
+              'assets/logos/apple.jpeg',
             ),
           ),
           _buildSocialBtn(
@@ -243,16 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildSignupBtn() {
     return GestureDetector(
-      onTap: () async {
-        await AuthService()
-            .signUpWithEmailAndPassword(
-              emailController.text,
-              passwordController.text,
-            )
-            .then(
-              (_) => navigationPage(),
-            );
-      },
+      onTap: () => pushSignUpPage(),
       child: RichText(
         text: TextSpan(
           children: [
@@ -292,7 +307,7 @@ class _LoginScreenState extends State<LoginScreen> {
               physics: NeverScrollableScrollPhysics(),
               padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.height * 0.05,
-                vertical: MediaQuery.of(context).size.height * 0.09,
+                vertical: MediaQuery.of(context).size.height * 0.11,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -311,12 +326,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   _buildPasswordTF(),
                   _buildForgotPasswordBtn(),
-                  _buildLoginBtn(),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  _buildSignInBtn(),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                  _buildSignupBtn(),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                   _buildSignInWithText(),
                   _buildSocialBtnRow(),
-                  // SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                  _buildSignupBtn(),
                 ],
               ),
             ),

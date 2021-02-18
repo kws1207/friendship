@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:departure/screens/login_screen.dart';
+import 'package:departure/screens/signin_screen.dart';
 import 'package:departure/screens/select_screen.dart';
 import 'package:departure/screens/worldcup_screen.dart';
 import 'package:departure/screens/champion_screen.dart';
@@ -19,7 +19,7 @@ void main() async {
   runApp(MaterialApp(
     home: SplashScreen(),
     routes: <String, WidgetBuilder>{
-      '/LoginScreen': (BuildContext context) => LoginScreen(),
+      '/SignInScreen': (BuildContext context) => SignInScreen(),
       '/SelectScreen': (BuildContext context) => SelectScreen(),
       // ignore: missing_required_param
       '/WorldcupScreen': (BuildContext context) => WorldcupScreen(),
@@ -43,7 +43,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigationPage() {
-    Navigator.of(context).pushReplacementNamed('/LoginScreen');
+    Navigator.of(context).pushReplacementNamed('/SignInScreen');
   }
 
   @override

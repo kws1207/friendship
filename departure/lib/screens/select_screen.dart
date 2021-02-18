@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:departure/utilities/constants.dart';
 import 'package:departure/screens/worldcup_screen.dart';
+import 'package:departure/domain/classes.dart';
 
 class SelectScreen extends StatefulWidget {
   @override
@@ -10,6 +11,7 @@ class SelectScreen extends StatefulWidget {
 class _SelectScreenState extends State<SelectScreen> {
   int _counter = 8;
   bool korean, bunsik, japanese, western, chinese;
+  List<Menu> menuList;
 
   @override
   void initState() {
@@ -18,6 +20,28 @@ class _SelectScreenState extends State<SelectScreen> {
     japanese = true;
     western = true;
     chinese = true;
+  }
+
+  void _showDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Text("ㅠㅠ"),
+          content: Text("메뉴가 부족합니다......."),
+          actions: <Widget>[
+            // ignore: deprecated_member_use
+            FlatButton(
+              child: Text("Close"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _incrementCounter() {
@@ -37,34 +61,10 @@ class _SelectScreenState extends State<SelectScreen> {
       //new
       settings: const RouteSettings(name: '/WorldcupScreen'),
       builder: (context) => WorldcupScreen(
-          counter: _counter,
-          korean: korean,
-          bunsik: bunsik,
-          japanese: japanese,
-          western: western,
-          chinese: chinese),
-    ));
-  }
-
-  Widget _worldcupBtn() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 25.0, horizontal: 25.0),
-      width: double.infinity,
-      // ignore: deprecated_member_use
-      child: RaisedButton(
-        elevation: 5.0,
-        onPressed: () => navigationPage(),
-        padding: EdgeInsets.all(15.0),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        color: Colors.red,
-        child: Text(
-          '월드컵 시작!',
-          style: kWhiteLabelStyle,
-        ),
+        counter: _counter,
+        menuList: menuList,
       ),
-    );
+    ));
   }
 
   Widget _koreanCheckBox() {
@@ -104,7 +104,7 @@ class _SelectScreenState extends State<SelectScreen> {
           value: bunsik,
           onChanged: (value) {
             setState(() {
-              bunsik = bunsik;
+              bunsik = !bunsik;
             });
           },
           checkColor: Colors.white,
@@ -113,7 +113,7 @@ class _SelectScreenState extends State<SelectScreen> {
         InkWell(
           onTap: () {
             setState(() {
-              bunsik = bunsik;
+              bunsik = !bunsik;
             });
           },
           child: Text(
@@ -294,7 +294,39 @@ class _SelectScreenState extends State<SelectScreen> {
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.05),
                 _buildSelectRoundRow(),
-                _worldcupBtn(),
+
+                // 월드컵 시작 버튼
+                FutureBuilder<void>(
+                  future: loadCSV(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    return Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 25.0, horizontal: 25.0),
+                      width: double.infinity,
+                      // ignore: deprecated_member_use
+                      child: RaisedButton(
+                        elevation: 5.0,
+                        onPressed: () {
+                          menuList = getMenuList(_counter, korean, bunsik,
+                              japanese, western, chinese);
+                          if (menuList == null)
+                            _showDialog();
+                          else
+                            navigationPage();
+                        },
+                        padding: EdgeInsets.all(15.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        color: Colors.red,
+                        child: Text(
+                          '월드컵 시작!',
+                          style: kWhiteLabelStyle,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),

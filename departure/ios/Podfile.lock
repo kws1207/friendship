@@ -223,8 +223,6 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.7):
     - BoringSSL-GRPC/Interface (= 0.0.7)
   - BoringSSL-GRPC/Interface (0.0.7)
-  - csv_reader (0.0.1):
-    - Flutter
   - Firebase/Analytics (7.3.0):
     - Firebase/Core
   - Firebase/Auth (7.3.0):
@@ -387,7 +385,6 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - csv_reader (from `.symlinks/plugins/csv_reader/ios`)
   - Firebase/Analytics
   - Firebase/Auth
   - Firebase/Core
@@ -429,8 +426,6 @@ SPEC REPOS:
     - PromisesObjC
 
 EXTERNAL SOURCES:
-  csv_reader:
-    :path: ".symlinks/plugins/csv_reader/ios"
   firebase_auth:
     :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_core:
@@ -448,7 +443,6 @@ SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
-  csv_reader: 2831e2bf05649b33e9f15b280d798b085523f210
   Firebase: 26223c695fe322633274198cb19dca8cb7e54416
   firebase_auth: b55e5136528dced982022ee073ed4b48f15c055c
   firebase_core: 91b27774a52f41f8b58484a75edf71197ac01c59
