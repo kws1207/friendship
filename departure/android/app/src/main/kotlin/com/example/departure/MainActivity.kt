@@ -1,4 +1,4 @@
-package com.example.departure
+package com.friendship.departure
 
 import io.flutter.embedding.android.FlutterActivity
 
