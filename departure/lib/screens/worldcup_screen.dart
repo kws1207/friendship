@@ -6,15 +6,18 @@ import 'package:departure/utilities/constants.dart';
 class WorldcupScreen extends StatefulWidget {
   final int counter;
   final List<Menu> menuList;
+  final String uid;
 
   WorldcupScreen({
     Key key,
     @required this.counter,
     @required this.menuList,
+    @required this.uid,
   }) : super(key: key);
 
   @override
-  _WorldcupScreenState createState() => _WorldcupScreenState(counter, menuList);
+  _WorldcupScreenState createState() =>
+      _WorldcupScreenState(counter, menuList, uid);
 }
 
 class _WorldcupScreenState extends State<WorldcupScreen> {
@@ -23,7 +26,8 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
   int topMenuIndex = 0, bottomMenuIndex = 1;
   int currentRound;
   final int counter;
-  _WorldcupScreenState(this.counter, this.menuList);
+  final String uid;
+  _WorldcupScreenState(this.counter, this.menuList, this.uid);
 
   @override
   void initState() {
@@ -35,7 +39,10 @@ class _WorldcupScreenState extends State<WorldcupScreen> {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       //new
       settings: const RouteSettings(name: '/ChampionScreen'),
-      builder: (context) => ChampionScreen(champion: champion),
+      builder: (context) => ChampionScreen(
+        champion: champion,
+        uid: uid,
+      ),
     ));
   }
 

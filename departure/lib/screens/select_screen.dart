@@ -7,8 +7,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SelectScreen extends StatefulWidget {
+  final String uid;
+
+  SelectScreen({Key key, @required this.uid}) : super(key: key);
+
   @override
-  _SelectScreenState createState() => new _SelectScreenState();
+  _SelectScreenState createState() => new _SelectScreenState(uid);
 }
 
 class _SelectScreenState extends State<SelectScreen> {
@@ -16,6 +20,9 @@ class _SelectScreenState extends State<SelectScreen> {
   bool korean, bunsik, japanese, western, chinese;
   List<Menu> menuList;
   final _saved = Set<Menu>();
+  final String uid;
+
+  _SelectScreenState(this.uid);
 
   @override
   void initState() {
@@ -124,6 +131,7 @@ class _SelectScreenState extends State<SelectScreen> {
       builder: (context) => WorldcupScreen(
         counter: _counter,
         menuList: menuList,
+        uid: uid,
       ),
     ));
   }

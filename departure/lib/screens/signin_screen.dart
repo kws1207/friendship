@@ -5,14 +5,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:departure/firebase/auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:departure/screens/signup_screen.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
-String name;
-String email;
-String imageUrl;
+String uid;
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -24,7 +21,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  GoogleSignInAccount user;
+  User user;
 
   Future<User> _googleSignIn() async {
     await Firebase.initializeApp();
@@ -35,11 +32,9 @@ class _SignInScreenState extends State<SignInScreen> {
       idToken: googleSignInAuthentication.idToken,
       accessToken: googleSignInAuthentication.accessToken,
     );
-    User user = (await auth.signInWithCredential(credential)).user;
+    user = (await auth.signInWithCredential(credential)).user;
     if (user != null) {
-      name = user.displayName;
-      email = user.email;
-      imageUrl = user.photoURL;
+      uid = user.uid;
     }
     return user;
   }
@@ -171,13 +166,17 @@ class _SignInScreenState extends State<SignInScreen> {
         onPressed: () async {
           await AuthService()
               .signInWithEmailAndPassword(
-                emailController.text,
-                passwordController.text,
-              )
+            emailController.text,
+            passwordController.text,
+          )
               .then(
-                (_) => navigationPage(),
-                onError: (error) => _showDialog(error),
-              );
+            (_) {
+              user = AuthService().userInfo;
+              uid = user.uid;
+              navigationPage();
+            },
+            onError: (error) => _showDialog(error),
+          );
         },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
@@ -253,12 +252,14 @@ class _SignInScreenState extends State<SignInScreen> {
           _buildSocialBtn(
             () async {
               try {
-                user = await googleSignIn.signIn();
+                await _googleSignIn();
                 print("User is $user.");
               } catch (e, s) {
                 _showDialog(e);
               }
-              if (user != null) navigationPage();
+              if (user != null) {
+                navigationPage();
+              }
             },
             AssetImage(
               'assets/logos/google.png',

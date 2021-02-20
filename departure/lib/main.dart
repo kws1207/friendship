@@ -16,19 +16,26 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  runApp(MaterialApp(
-    home: SplashScreen(),
-    routes: <String, WidgetBuilder>{
-      '/SignInScreen': (BuildContext context) => SignInScreen(),
-      '/SelectScreen': (BuildContext context) => SelectScreen(),
-      // ignore: missing_required_param
-      '/WorldcupScreen': (BuildContext context) => WorldcupScreen(),
-      // ignore: missing_required_param
-      '/ChampionScreen': (BuildContext context) => ChampionScreen()
-    },
-    // title: '메뉴 이상형월드컵',
-    // theme: ThemeData.dark(),
-  ));
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: SplashScreen(),
+      routes: <String, WidgetBuilder>{
+        '/SignInScreen': (BuildContext context) => SignInScreen(),
+        '/SelectScreen': (BuildContext context) => SelectScreen(),
+        // ignore: missing_required_param
+        '/WorldcupScreen': (BuildContext context) => WorldcupScreen(),
+        // ignore: missing_required_param
+        '/ChampionScreen': (BuildContext context) => ChampionScreen()
+      },
+      // title: '메뉴 이상형월드컵',
+      // theme: ThemeData.dark(),
+    );
+  }
 }
 
 class SplashScreen extends StatefulWidget {

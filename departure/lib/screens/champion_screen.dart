@@ -6,21 +6,27 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class ChampionScreen extends StatefulWidget {
   final Menu champion;
+  final String uid;
 
-  ChampionScreen({Key key, @required this.champion}) : super(key: key);
+  ChampionScreen({
+    Key key,
+    @required this.champion,
+    @required this.uid,
+  }) : super(key: key);
 
   @override
-  _ChampionScreenState createState() => _ChampionScreenState(champion);
+  _ChampionScreenState createState() => _ChampionScreenState(champion, uid);
 }
 
 class _ChampionScreenState extends State<ChampionScreen> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
+  final String uid;
 
   bool _saveChampion;
   Menu champion;
 
-  _ChampionScreenState(this.champion);
+  _ChampionScreenState(this.champion, this.uid);
 
   @override
   void initState() {
@@ -29,14 +35,17 @@ class _ChampionScreenState extends State<ChampionScreen> {
   }
 
   void saveChampion() {
-    _firestore.collection('/history').add({
-      // "user" :
-      "name": champion.name
-    });
+    _firestore.collection('history').doc(uid).set(
+      {
+        'array': FieldValue.arrayUnion([champion.name]),
+      },
+      SetOptions(merge: true),
+    );
   }
 
   void navigateToSelectScreen() {
     // TODO: 결과 저장하기 값 보내기
+    if (_saveChampion) saveChampion();
     Navigator.of(context).pushReplacementNamed('/SelectScreen');
   }
 
