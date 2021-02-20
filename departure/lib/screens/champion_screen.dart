@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:departure/domain/classes.dart';
 import 'package:departure/utilities/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ChampionScreen extends StatefulWidget {
   final Menu champion;
@@ -12,14 +14,25 @@ class ChampionScreen extends StatefulWidget {
 }
 
 class _ChampionScreenState extends State<ChampionScreen> {
-  final Menu champion;
-  _ChampionScreenState(this.champion);
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
 
   bool _saveChampion;
+  Menu champion;
+
+  _ChampionScreenState(this.champion);
 
   @override
   void initState() {
     _saveChampion = true;
+    // champion = null;
+  }
+
+  void saveChampion() {
+    _firestore.collection('/history').add({
+      // "user" :
+      "name": champion.name
+    });
   }
 
   void navigateToSelectScreen() {

@@ -24,6 +24,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  GoogleSignInAccount user;
+
   Future<User> _googleSignIn() async {
     await Firebase.initializeApp();
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
@@ -249,12 +251,14 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
           ),
           _buildSocialBtn(
-            () {
-              _googleSignIn()
-                  .whenComplete(() => navigationPage())
-                  .catchError((onError) {
-                print(onError);
-              });
+            () async {
+              try {
+                user = await googleSignIn.signIn();
+                print("User is $user.");
+              } catch (e, s) {
+                _showDialog(e);
+              }
+              if (user != null) navigationPage();
             },
             AssetImage(
               'assets/logos/google.png',

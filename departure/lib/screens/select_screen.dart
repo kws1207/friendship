@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:departure/utilities/constants.dart';
 import 'package:departure/screens/worldcup_screen.dart';
 import 'package:departure/domain/classes.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SelectScreen extends StatefulWidget {
   @override
@@ -12,6 +15,7 @@ class _SelectScreenState extends State<SelectScreen> {
   int _counter = 8;
   bool korean, bunsik, japanese, western, chinese;
   List<Menu> menuList;
+  final _saved = Set<Menu>();
 
   @override
   void initState() {
@@ -20,6 +24,29 @@ class _SelectScreenState extends State<SelectScreen> {
     japanese = true;
     western = true;
     chinese = true;
+  }
+
+  Widget championHistory(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+        // <2> Pass `Stream<QuerySnapshot>` to stream
+        stream: FirebaseFirestore.instance.collection('history').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            // <3> Retrieve `List<DocumentSnapshot>` from snapshot
+            final List<DocumentSnapshot> documents = snapshot.data.docs;
+            return ListView(
+                children: documents
+                    .map((doc) => Card(
+                          child: ListTile(
+                            title: Text(doc['text']),
+                            subtitle: Text(doc['email']),
+                          ),
+                        ))
+                    .toList());
+          } else if (snapshot.hasError) {
+            return Text("It's Error!");
+          }
+        });
   }
 
   void _showDialog() {
@@ -41,6 +68,40 @@ class _SelectScreenState extends State<SelectScreen> {
           ],
         );
       },
+    );
+  }
+
+  void _pushSaved() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        // NEW lines from here...
+        builder: (BuildContext context) {
+          final tiles = _saved.map(
+            (Menu menu) {
+              return ListTile(
+                title: Text(
+                  menu.name,
+                ),
+              );
+            },
+          );
+          final divided = ListTile.divideTiles(
+            context: context,
+            tiles: tiles,
+          ).toList();
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                '명예의 전당',
+                style: kWhiteLabelStyle,
+              ),
+              backgroundColor: Colors.orange[400],
+            ),
+            body: ListView(children: divided),
+          );
+        }, // ...to here.
+      ),
     );
   }
 
@@ -252,9 +313,7 @@ class _SelectScreenState extends State<SelectScreen> {
           style: kWhiteLabelStyle,
         ),
         actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.list),
-              onPressed: () => {print("menu icon pressed")}),
+          IconButton(icon: Icon(Icons.list), onPressed: () => {_pushSaved()}),
         ],
         actionsIconTheme: IconThemeData(
           color: Colors.white,

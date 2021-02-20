@@ -65,7 +65,7 @@ List<Menu> getMenuList(menuNum, korean, bunsik, japanese, western, chinese) {
     }
   }
 
-  if (menuNum < totalList.length) {
+  if (menuNum <= totalList.length) {
     menuList = totalList.sublist(0, menuNum);
     menuList.shuffle();
     return menuList;
