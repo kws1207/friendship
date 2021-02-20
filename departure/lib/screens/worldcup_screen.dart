@@ -1,7 +1,6 @@
 import 'package:departure/screens/champion_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:departure/domain/classes.dart';
-import 'package:departure/utilities/constants.dart';
 
 class WorldcupScreen extends StatefulWidget {
   final int counter;

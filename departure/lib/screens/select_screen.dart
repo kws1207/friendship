@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:departure/utilities/constants.dart';
 import 'package:departure/screens/worldcup_screen.dart';
 import 'package:departure/domain/classes.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SelectScreen extends StatefulWidget {
@@ -19,7 +17,6 @@ class _SelectScreenState extends State<SelectScreen> {
   int _counter = 8;
   bool korean, bunsik, japanese, western, chinese;
   List<Menu> menuList;
-  final _saved = Set<Menu>();
   final String uid;
 
   _SelectScreenState(this.uid);
@@ -34,24 +31,29 @@ class _SelectScreenState extends State<SelectScreen> {
   }
 
   Widget championHistory(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-        // <2> Pass `Stream<QuerySnapshot>` to stream
-        stream: FirebaseFirestore.instance.collection('history').snapshots(),
+    return StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('history')
+            .doc(uid)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            // <3> Retrieve `List<DocumentSnapshot>` from snapshot
-            final List<DocumentSnapshot> documents = snapshot.data.docs;
+            final DocumentSnapshot document = snapshot.data;
             return ListView(
-                children: documents
-                    .map((doc) => Card(
-                          child: ListTile(
-                            title: Text(doc['text']),
-                            subtitle: Text(doc['email']),
-                          ),
-                        ))
-                    .toList());
-          } else if (snapshot.hasError) {
-            return Text("It's Error!");
+              children: List.from(document['array'])
+                  .map(
+                    (name) => Card(
+                      child: ListTile(
+                        title: Text(name),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            );
+          } else {
+            return Card(
+              child: Text("Loading..."),
+            );
           }
         });
   }
@@ -83,20 +85,6 @@ class _SelectScreenState extends State<SelectScreen> {
       MaterialPageRoute<void>(
         // NEW lines from here...
         builder: (BuildContext context) {
-          final tiles = _saved.map(
-            (Menu menu) {
-              return ListTile(
-                title: Text(
-                  menu.name,
-                ),
-              );
-            },
-          );
-          final divided = ListTile.divideTiles(
-            context: context,
-            tiles: tiles,
-          ).toList();
-
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -105,7 +93,7 @@ class _SelectScreenState extends State<SelectScreen> {
               ),
               backgroundColor: Colors.orange[400],
             ),
-            body: ListView(children: divided),
+            body: championHistory(context),
           );
         }, // ...to here.
       ),

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:departure/firebase/auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:departure/screens/select_screen.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -40,7 +41,13 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void navigationPage() {
-    Navigator.of(context).pushReplacementNamed('/SelectScreen');
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      //new
+      settings: const RouteSettings(name: '/SelectScreen'),
+      builder: (context) => SelectScreen(
+        uid: uid,
+      ),
+    ));
   }
 
   void pushSignUpPage() {
@@ -158,8 +165,10 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget _buildSignInBtn() {
     return Container(
       padding: EdgeInsets.symmetric(
-          vertical: MediaQuery.of(context).size.height * 0.02),
-      width: double.infinity,
+        vertical: MediaQuery.of(context).size.height * 0.02,
+        horizontal: MediaQuery.of(context).size.width * 0.02,
+      ),
+      width: MediaQuery.of(context).size.width * 0.35,
       // ignore: deprecated_member_use
       child: RaisedButton(
         elevation: 5.0,
@@ -185,6 +194,39 @@ class _SignInScreenState extends State<SignInScreen> {
         color: Colors.red,
         child: Text(
           '로그인',
+          style: kWhiteLabelStyle,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSignInAnonymously() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.height * 0.02,
+        horizontal: MediaQuery.of(context).size.width * 0.02,
+      ),
+      width: MediaQuery.of(context).size.width * 0.4,
+      // ignore: deprecated_member_use
+      child: RaisedButton(
+        elevation: 5.0,
+        onPressed: () async {
+          await auth.signInAnonymously().then(
+            (_) {
+              user = AuthService().userInfo;
+              uid = user.uid;
+              navigationPage();
+            },
+            onError: (error) => _showDialog(error),
+          );
+        },
+        padding: EdgeInsets.all(15.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        color: Colors.grey[600],
+        child: Text(
+          '비회원 로그인',
           style: kWhiteLabelStyle,
         ),
       ),
@@ -331,7 +373,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   _buildPasswordTF(),
                   _buildForgotPasswordBtn(),
-                  _buildSignInBtn(),
+                  Row(
+                    children: <Widget>[
+                      _buildSignInBtn(),
+                      _buildSignInAnonymously(),
+                    ],
+                  ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   _buildSignupBtn(),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.03),

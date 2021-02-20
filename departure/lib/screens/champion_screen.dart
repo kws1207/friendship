@@ -3,6 +3,7 @@ import 'package:departure/domain/classes.dart';
 import 'package:departure/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:departure/screens/select_screen.dart';
 
 class ChampionScreen extends StatefulWidget {
   final Menu champion;
@@ -34,7 +35,8 @@ class _ChampionScreenState extends State<ChampionScreen> {
     // champion = null;
   }
 
-  void saveChampion() {
+  void saveChampion() async {
+    print(uid);
     _firestore.collection('history').doc(uid).set(
       {
         'array': FieldValue.arrayUnion([champion.name]),
@@ -46,7 +48,15 @@ class _ChampionScreenState extends State<ChampionScreen> {
   void navigateToSelectScreen() {
     // TODO: 결과 저장하기 값 보내기
     if (_saveChampion) saveChampion();
-    Navigator.of(context).pushReplacementNamed('/SelectScreen');
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        //new
+        settings: const RouteSettings(name: '/SelectScreen'),
+        builder: (context) => SelectScreen(
+          uid: uid,
+        ),
+      ),
+    );
   }
 
   Widget _buildSearchBtn() {
