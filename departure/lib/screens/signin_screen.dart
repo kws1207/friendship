@@ -6,11 +6,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:departure/firebase/auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:departure/screens/select_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
-
-String uid;
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -21,8 +20,28 @@ class _SignInScreenState extends State<SignInScreen> {
   // bool _rememberMe = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  static final storage = FlutterSecureStorage();
+
+  String _userEmail, _userPassword, _userUID;
 
   User user;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _asyncMethod();
+    });
+  }
+
+  _asyncMethod() async {
+    _userEmail = await storage.read(key: 'email');
+    _userPassword = await storage.read(key: 'password');
+    _userUID = await storage.read(key: 'uid');
+
+    if (_userEmail != null || _userPassword != null || _userUID != null)
+      navigationPage();
+  }
 
   Future<User> _googleSignIn() async {
     await Firebase.initializeApp();
@@ -35,9 +54,16 @@ class _SignInScreenState extends State<SignInScreen> {
     );
     user = (await auth.signInWithCredential(credential)).user;
     if (user != null) {
-      uid = user.uid;
+      _userUID = user.uid;
     }
     return user;
+  }
+
+  void _saveEmailPassword(
+      String email, String password, String _userUID) async {
+    await storage.write(key: 'email', value: email);
+    await storage.write(key: 'password', value: password);
+    await storage.write(key: '_userUID', value: _userUID);
   }
 
   void navigationPage() {
@@ -45,7 +71,7 @@ class _SignInScreenState extends State<SignInScreen> {
       //new
       settings: const RouteSettings(name: '/SelectScreen'),
       builder: (context) => SelectScreen(
-        uid: uid,
+        uid: _userUID,
       ),
     ));
   }
@@ -181,7 +207,9 @@ class _SignInScreenState extends State<SignInScreen> {
               .then(
             (_) {
               user = AuthService().userInfo;
-              uid = user.uid;
+              _userUID = user.uid;
+              _saveEmailPassword(
+                  emailController.text, passwordController.text, _userUID);
               navigationPage();
             },
             onError: (error) => _showDialog(error),
@@ -214,7 +242,7 @@ class _SignInScreenState extends State<SignInScreen> {
           await auth.signInAnonymously().then(
             (_) {
               user = AuthService().userInfo;
-              uid = user.uid;
+              _userUID = user.uid;
               navigationPage();
             },
             onError: (error) => _showDialog(error),

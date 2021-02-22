@@ -3,11 +3,16 @@ import 'package:departure/utilities/constants.dart';
 import 'package:departure/screens/worldcup_screen.dart';
 import 'package:departure/domain/classes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SelectScreen extends StatefulWidget {
   final String uid;
 
-  SelectScreen({Key key, @required this.uid}) : super(key: key);
+  SelectScreen({
+    Key key,
+    @required this.uid,
+  }) : super(key: key);
 
   @override
   _SelectScreenState createState() => new _SelectScreenState(uid);
@@ -18,6 +23,7 @@ class _SelectScreenState extends State<SelectScreen> {
   bool korean, bunsik, japanese, western, chinese;
   List<Menu> menuList;
   final String uid;
+  static final storage = FlutterSecureStorage();
 
   _SelectScreenState(this.uid);
 
@@ -58,7 +64,7 @@ class _SelectScreenState extends State<SelectScreen> {
         });
   }
 
-  void _showDialog() {
+  void _showLessMenuDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -66,6 +72,28 @@ class _SelectScreenState extends State<SelectScreen> {
         return AlertDialog(
           title: Text("ㅠㅠ"),
           content: Text("메뉴가 부족합니다......."),
+          actions: <Widget>[
+            // ignore: deprecated_member_use
+            FlatButton(
+              child: Text("Close"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showSignOutFailDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Text("ㅠㅠ"),
+          content: Text("로그아웃 실패!"),
           actions: <Widget>[
             // ignore: deprecated_member_use
             FlatButton(
@@ -122,6 +150,10 @@ class _SelectScreenState extends State<SelectScreen> {
         uid: uid,
       ),
     ));
+  }
+
+  void navigationToSignInPage() {
+    Navigator.of(context).pushReplacementNamed('/SignInScreen');
   }
 
   Widget _koreanCheckBox() {
@@ -299,8 +331,40 @@ class _SelectScreenState extends State<SelectScreen> {
     );
   }
 
+  Widget _buildSignOutBtn() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+      width: double.infinity,
+      // ignore: deprecated_member_use
+      child: RaisedButton(
+        elevation: 5.0,
+        onPressed: () async {
+          await FirebaseAuth.instance.signOut().then(
+            (_) async {
+              storage.delete(key: 'email');
+              storage.delete(key: 'password');
+              storage.delete(key: 'uid');
+              navigationToSignInPage();
+            },
+            onError: (error) => _showSignOutFailDialog(),
+          );
+        },
+        padding: EdgeInsets.all(15.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        color: Colors.red[300],
+        child: Text(
+          '로그아웃',
+          style: kWhiteLabelStyle,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(uid);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.red,
@@ -309,7 +373,10 @@ class _SelectScreenState extends State<SelectScreen> {
           style: kWhiteLabelStyle,
         ),
         actions: <Widget>[
-          IconButton(icon: Icon(Icons.list), onPressed: () => {_pushSaved()}),
+          IconButton(
+            icon: Icon(Icons.list),
+            onPressed: () => {_pushSaved()},
+          ),
         ],
         actionsIconTheme: IconThemeData(
           color: Colors.white,
@@ -336,7 +403,7 @@ class _SelectScreenState extends State<SelectScreen> {
                     ],
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                SizedBox(height: MediaQuery.of(context).size.height * 0),
                 Text(
                   '회색 버튼을 이용하여\n\n4강부터 32강까지 선택 가능합니다.',
                   style: TextStyle(
@@ -356,7 +423,7 @@ class _SelectScreenState extends State<SelectScreen> {
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     return Container(
                       padding: EdgeInsets.symmetric(
-                          vertical: 25.0, horizontal: 25.0),
+                          vertical: 10.0, horizontal: 25.0),
                       width: double.infinity,
                       // ignore: deprecated_member_use
                       child: RaisedButton(
@@ -365,7 +432,7 @@ class _SelectScreenState extends State<SelectScreen> {
                           menuList = getMenuList(_counter, korean, bunsik,
                               japanese, western, chinese);
                           if (menuList == null)
-                            _showDialog();
+                            _showLessMenuDialog();
                           else
                             navigationPage();
                         },
@@ -382,6 +449,7 @@ class _SelectScreenState extends State<SelectScreen> {
                     );
                   },
                 ),
+                _buildSignOutBtn(),
               ],
             ),
           ),

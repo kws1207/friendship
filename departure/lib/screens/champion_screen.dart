@@ -4,6 +4,7 @@ import 'package:departure/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:departure/screens/select_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChampionScreen extends StatefulWidget {
   final Menu champion;
@@ -59,6 +60,15 @@ class _ChampionScreenState extends State<ChampionScreen> {
     );
   }
 
+  _launchURL() async {
+    final url = 'https://m.map.kakao.com/actions/searchView?q=' + champion.name;
+    if (await canLaunch(Uri.encodeFull(url))) {
+      await launch(Uri.encodeFull(url));
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   Widget _buildSearchBtn() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10.0),
@@ -66,7 +76,7 @@ class _ChampionScreenState extends State<ChampionScreen> {
       // ignore: deprecated_member_use
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () => {print("SearchBtn pressed")},
+        onPressed: () => {_launchURL()},
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
@@ -87,7 +97,9 @@ class _ChampionScreenState extends State<ChampionScreen> {
       // ignore: deprecated_member_use
       child: RaisedButton(
         elevation: 5.0,
-        onPressed: () => {navigateToSelectScreen()},
+        onPressed: () => {
+          navigateToSelectScreen(),
+        },
         padding: EdgeInsets.all(15.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
