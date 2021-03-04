@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:departure/firebase/auth.dart';
 import 'package:departure/utilities/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:departure/screens/select_screen.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -14,9 +17,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final passwordCheckController = TextEditingController();
+  static final storage = FlutterSecureStorage();
+  final _firestore = FirebaseFirestore.instance;
+  String _userEmail, _userPassword, _userUID;
+
+  User user;
 
   void navigationPage() {
-    Navigator.of(context).pushReplacementNamed('/SelectScreen');
+    Navigator.of(context).pushReplacement(MaterialPageRoute(
+      //new
+      settings: const RouteSettings(name: '/SelectScreen'),
+      builder: (context) => SelectScreen(
+        uid: _userUID,
+      ),
+    ));
   }
 
   void _passwordUnmatchDialog() {
@@ -39,6 +53,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
         );
       },
     );
+  }
+
+  void _saveEmailPassword(
+      String email, String password, String _userUID) async {
+    await storage.write(key: 'email', value: email);
+    await storage.write(key: 'password', value: password);
+    await storage.write(key: '_userUID', value: _userUID);
   }
 
   void _showDialog(dynamic error) {
@@ -180,7 +201,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
               passwordController.text,
             )
                 .then(
-              (_) => navigationPage(),
+              (_) {
+                user = AuthService().userInfo;
+                _userUID = user.uid;
+                _saveEmailPassword(
+                    emailController.text, passwordController.text, _userUID);
+                _firestore.collection('history').doc(_userUID).set(
+                  {
+                    'array':
+                        FieldValue.arrayUnion(["--- 이전 월드컵에서 우승한 메뉴들 ---"]),
+                  },
+                  SetOptions(merge: true),
+                );
+                navigationPage();
+              },
               onError: (error) {
                 _showDialog(error);
               },

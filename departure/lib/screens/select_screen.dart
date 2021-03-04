@@ -5,6 +5,7 @@ import 'package:departure/domain/classes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SelectScreen extends StatefulWidget {
   final String uid;
@@ -22,6 +23,7 @@ class _SelectScreenState extends State<SelectScreen> {
   int _counter = 8;
   bool korean, bunsik, japanese, western, chinese;
   List<Menu> menuList;
+  final _firestore = FirebaseFirestore.instance;
   final String uid;
   static final storage = FlutterSecureStorage();
 
@@ -333,7 +335,8 @@ class _SelectScreenState extends State<SelectScreen> {
 
   Widget _buildSignOutBtn() {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+      padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.width * 0.01, horizontal: 25.0),
       width: double.infinity,
       // ignore: deprecated_member_use
       child: RaisedButton(
@@ -392,7 +395,7 @@ class _SelectScreenState extends State<SelectScreen> {
                 Container(
                   padding: EdgeInsets.only(
                       left: MediaQuery.of(context).size.width * 0.05,
-                      bottom: MediaQuery.of(context).size.height * 0.05),
+                      bottom: MediaQuery.of(context).size.height * 0.03),
                   child: Column(
                     children: <Widget>[
                       _koreanCheckBox(),
@@ -414,7 +417,7 @@ class _SelectScreenState extends State<SelectScreen> {
                     fontFamily: 'BMDH',
                   ),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                 _buildSelectRoundRow(),
 
                 // 월드컵 시작 버튼
@@ -423,7 +426,8 @@ class _SelectScreenState extends State<SelectScreen> {
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     return Container(
                       padding: EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 25.0),
+                          vertical: MediaQuery.of(context).size.width * 0.03,
+                          horizontal: 25.0),
                       width: double.infinity,
                       // ignore: deprecated_member_use
                       child: RaisedButton(

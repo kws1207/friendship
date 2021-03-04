@@ -7,7 +7,7 @@
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <string>com.friendship.departure</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
@@ -51,6 +51,14 @@
             <string>com.googleusercontent.apps.1086778254624-goe19kgr81j5j865juhgenuqh9a3lb2c</string>
             </array>
         </dict>
+        <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>com.googleusercontent.apps.1086778254624-7817j7fm8d0ou1uamadbmi2pbsm05pl3</string>
+        </array>
+    </dict>
     </array>
 </dict>
 </plist>

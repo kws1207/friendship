@@ -7,6 +7,7 @@ import 'package:departure/firebase/auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:departure/screens/select_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -21,6 +22,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   static final storage = FlutterSecureStorage();
+  final _firestore = FirebaseFirestore.instance;
 
   String _userEmail, _userPassword, _userUID;
 
@@ -29,22 +31,23 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _asyncMethod();
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => _asyncMethod(),
+    );
   }
 
   _asyncMethod() async {
+    print('uid loaded');
     _userEmail = await storage.read(key: 'email');
     _userPassword = await storage.read(key: 'password');
     _userUID = await storage.read(key: 'uid');
 
-    if (_userEmail != null || _userPassword != null || _userUID != null)
-      navigationPage();
+    if (_userUID != null) navigationPage();
   }
 
   Future<User> _googleSignIn() async {
     await Firebase.initializeApp();
+    print("google login try");
     final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
     final GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount.authentication;
@@ -56,6 +59,15 @@ class _SignInScreenState extends State<SignInScreen> {
     if (user != null) {
       _userUID = user.uid;
     }
+    if (AdditionalUserInfo().isNewUser) {
+      _firestore.collection('history').doc(_userUID).set(
+        {
+          'array': FieldValue.arrayUnion(["--- 이전 월드컵에서 우승한 메뉴들 ---"]),
+        },
+        SetOptions(merge: true),
+      );
+    }
+    print("google login finish");
     return user;
   }
 
@@ -243,6 +255,12 @@ class _SignInScreenState extends State<SignInScreen> {
             (_) {
               user = AuthService().userInfo;
               _userUID = user.uid;
+              _firestore.collection('history').doc(_userUID).set(
+                {
+                  'array': FieldValue.arrayUnion(["--- 이전 월드컵에서 우승한 메뉴들 ---"]),
+                },
+                SetOptions(merge: true),
+              );
               navigationPage();
             },
             onError: (error) => _showDialog(error),

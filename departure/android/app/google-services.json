@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1086778254624",
+    "project_id": "departure-e733a",
+    "storage_bucket": "departure-e733a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086778254624:android:8eb585486662a5ea372345",
+        "android_client_info": {
+          "package_name": "com.friendship.departure"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1086778254624-u5lvi042p32ml2gcju7kl9882cul5oea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSarZMigP8WjA8tEqQBJgG8QonTinJYlI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1086778254624-u5lvi042p32ml2gcju7kl9882cul5oea.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1086778254624-7817j7fm8d0ou1uamadbmi2pbsm05pl3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.friendship.departure"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
