@@ -205,7 +205,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 user = AuthService().userInfo;
                 _userUID = user.uid;
                 _saveEmailPassword(
-                    emailController.text, passwordController.text, _userUID);
+                  emailController.text,
+                  passwordController.text,
+                  _userUID,
+                );
                 _firestore.collection('history').doc(_userUID).set(
                   {
                     'array':
