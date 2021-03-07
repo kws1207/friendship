@@ -37,7 +37,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   _asyncMethod() async {
-    print('uid loaded');
+    // Not working on simulator, does it work on actual device?
     _userEmail = await storage.read(key: 'email');
     _userPassword = await storage.read(key: 'password');
     _userUID = await storage.read(key: 'uid');
@@ -79,6 +79,8 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void navigationPage() {
+    assert(_userUID != null);
+
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       //new
       settings: const RouteSettings(name: '/SelectScreen'),
