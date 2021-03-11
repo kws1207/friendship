@@ -1,4 +1,5 @@
 import 'package:departure/screens/signup_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:departure/utilities/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:departure/screens/select_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:departure/utilities/functions.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -93,28 +95,6 @@ class _SignInScreenState extends State<SignInScreen> {
   void pushSignUpPage() {
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => SignUpScreen()));
-  }
-
-  void _showDialog(dynamic error) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: Text("ㅠㅠ"),
-          content: Text(error.toString()),
-          actions: <Widget>[
-            // ignore: deprecated_member_use
-            FlatButton(
-              child: Text("Close"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   Widget _buildEmailTF() {
@@ -226,7 +206,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   emailController.text, passwordController.text, _userUID);
               navigationPage();
             },
-            onError: (error) => _showDialog(error),
+            onError: (error) => showNativeDialog(error, context),
           );
         },
         padding: EdgeInsets.all(15.0),
@@ -265,7 +245,7 @@ class _SignInScreenState extends State<SignInScreen> {
               );
               navigationPage();
             },
-            onError: (error) => _showDialog(error),
+            onError: (error) => showNativeDialog(error, context),
           );
         },
         padding: EdgeInsets.all(15.0),
@@ -336,7 +316,7 @@ class _SignInScreenState extends State<SignInScreen> {
           _buildSocialBtn(
             () => print('SignIn with Apple'),
             AssetImage(
-              'assets/logos/apple.jpeg',
+              'assets/logos/apple.png',
             ),
           ),
           _buildSocialBtn(
@@ -345,7 +325,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 await _googleSignIn();
                 print("User is $user.");
               } catch (e, s) {
-                _showDialog(e);
+                showNativeDialog(e, context);
               }
               if (user != null) {
                 navigationPage();

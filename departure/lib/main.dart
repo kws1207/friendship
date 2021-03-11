@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(),
       routes: <String, WidgetBuilder>{
         '/SignInScreen': (BuildContext context) => SignInScreen(),
+        // ignore: missing_required_param
         '/SelectScreen': (BuildContext context) => SelectScreen(),
         // ignore: missing_required_param
         '/WorldcupScreen': (BuildContext context) => WorldcupScreen(),

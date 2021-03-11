@@ -208,7 +208,7 @@ class _SelectScreenState extends State<SelectScreen> {
             });
           },
           child: Text(
-            '분식',
+            '분식 / 패스트푸드',
             style: kBlackLabelStyle,
           ),
         )

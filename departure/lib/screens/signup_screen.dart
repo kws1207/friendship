@@ -5,6 +5,7 @@ import 'package:departure/utilities/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:departure/screens/select_screen.dart';
+import 'package:departure/utilities/functions.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
@@ -60,28 +61,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     await storage.write(key: 'email', value: email);
     await storage.write(key: 'password', value: password);
     await storage.write(key: '_userUID', value: _userUID);
-  }
-
-  void _showDialog(dynamic error) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: Text("ㅠㅠ"),
-          content: Text(error.toString()),
-          actions: <Widget>[
-            // ignore: deprecated_member_use
-            FlatButton(
-              child: Text("Close"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   Widget _buildEmailTF() {
@@ -219,7 +198,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 navigationPage();
               },
               onError: (error) {
-                _showDialog(error);
+                showNativeDialog(error, context);
               },
             );
           } else

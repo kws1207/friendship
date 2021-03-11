@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1086778254624-089v7ji9mbevutobjk2gl3pbbat63265.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.friendship.departure",
+            "certificate_hash": "493075ea711a7f270e890fd7fe3a41227b5c3a12"
+          }
+        },
+        {
           "client_id": "1086778254624-u5lvi042p32ml2gcju7kl9882cul5oea.apps.googleusercontent.com",
           "client_type": 3
         }

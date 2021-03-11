@@ -63,11 +63,11 @@ flutter:
     - assets/menus/western.csv
     - assets/menus/chinese.csv
 
-    - assets/logos/apple.jpeg
+    - assets/logos/apple.png
     - assets/logos/google.png
     - assets/images/splash_img.jpeg
     - assets/images/crown.png
-
+    # 한식
     - assets/images/족발.jpeg
     - assets/images/대창덮밥.jpeg
     - assets/images/감자탕.jpeg
@@ -95,6 +95,10 @@ flutter:
     - assets/images/콩국수.jpeg
     - assets/images/조개찜.jpeg
     - assets/images/전.jpeg
+    - assets/images/닭발.jpeg
+    - assets/images/비빔밥.jpeg
+    - assets/images/떡갈비.jpeg
+    # 분식/패스트푸드
     - assets/images/떡볶이.jpeg
     - assets/images/김밥.jpeg
     - assets/images/볶음밥.jpeg
@@ -104,6 +108,8 @@ flutter:
     - assets/images/피자.jpeg
     - assets/images/치킨.jpeg
     - assets/images/햄버거.jpeg
+    - assets/images/닭강정.jpeg
+    # 중국음식
     - assets/images/마라요리.jpeg
     - assets/images/중화면요리.jpeg
     - assets/images/중화고기요리.jpeg
@@ -112,6 +118,7 @@ flutter:
     - assets/images/양꼬치.jpeg
     - assets/images/딤섬.jpeg
     - assets/images/양갈비.jpeg
+    # 양식/아시아
     - assets/images/파스타.jpeg
     - assets/images/리조또.jpeg
     - assets/images/인도커리.jpeg
@@ -122,6 +129,9 @@ flutter:
     - assets/images/멕시코요리.jpeg
     - assets/images/수제버거.jpeg
     - assets/images/그릭요거트.jpeg
+    - assets/images/빵.jpeg
+    - assets/images/스페인음식.jpeg
+    # 일식
     - assets/images/라멘.jpeg
     - assets/images/고기덮밥.jpeg
     - assets/images/초밥.jpeg
