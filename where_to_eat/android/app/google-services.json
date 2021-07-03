@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "959784569795",
+    "project_id": "where-to-eat-e9138",
+    "storage_bucket": "where-to-eat-e9138.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:959784569795:android:e380860e6493d5b6558b76",
+        "android_client_info": {
+          "package_name": "com.friendship.where_to_eat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "959784569795-f8pll0clma7tk9rrn25ttotgtlch38e4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSIZdbHyP8mBf34GU_JLYnhklIOAD7KnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "959784569795-f8pll0clma7tk9rrn25ttotgtlch38e4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "959784569795-d88h1lpks4j6t29ldpkv1bl0t3ebtifc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.friendship.where_to_eat"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
