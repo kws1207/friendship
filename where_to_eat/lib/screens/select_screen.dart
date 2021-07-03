@@ -40,7 +40,7 @@ class _SelectScreenState extends State<SelectScreen> {
   Widget championHistory(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
         stream: FirebaseFirestore.instance
-            .collection('history')
+            .collection('favorites')
             .doc(uid)
             .snapshots(),
         builder: (context, snapshot) {
@@ -393,34 +393,6 @@ class _SelectScreenState extends State<SelectScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.05,
-                      bottom: MediaQuery.of(context).size.height * 0.03),
-                  child: Column(
-                    children: <Widget>[
-                      _koreanCheckBox(),
-                      _bunsikCheckBox(),
-                      _japaneseCheckBox(),
-                      _westernCheckBox(),
-                      _chineseCheckBox(),
-                    ],
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0),
-                Text(
-                  '회색 버튼을 이용하여\n\n4강부터 32강까지 선택 가능합니다.',
-                  style: TextStyle(
-                    color: Colors.black,
-                    letterSpacing: 1.5,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.normal,
-                    fontFamily: 'BMDH',
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                _buildSelectRoundRow(),
-
                 // 월드컵 시작 버튼
                 FutureBuilder<void>(
                   future: loadCSV(),
@@ -436,8 +408,7 @@ class _SelectScreenState extends State<SelectScreen> {
                         onPressed: () {
                           menuList = getMenuList(_counter, korean, bunsik,
                               japanese, western, chinese);
-                          if (menuList == null)
-                            _showLessMenuDialog();
+                          if (menuList == null) _showLessMenuDialog();
                           //navigationPage();
                         },
                         padding: EdgeInsets.all(15.0),

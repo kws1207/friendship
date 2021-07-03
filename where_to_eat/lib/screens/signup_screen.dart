@@ -188,15 +188,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   passwordController.text,
                   _userUID,
                 );
-                /*
-                _firestore.collection('history').doc(_userUID).set(
+
+                _firestore.collection('favorites').doc(_userUID).set(
                   {
-                    'array':
-                        FieldValue.arrayUnion(["--- 이전 월드컵에서 우승한 메뉴들 ---"]),
+                    'array': FieldValue.arrayUnion(["--- 찜한 식당 목록 ---"]),
                   },
                   SetOptions(merge: true),
                 );
-                */
+
                 navigationPage();
               },
               onError: (error) {
