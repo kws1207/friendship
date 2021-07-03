@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>959784569795-d88h1lpks4j6t29ldpkv1bl0t3ebtifc.apps.googleusercontent.com</string>
+	<string>959784569795-7da7lkn6i9og44th4u37381q0ig02oml.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.959784569795-d88h1lpks4j6t29ldpkv1bl0t3ebtifc</string>
+	<string>com.googleusercontent.apps.959784569795-7da7lkn6i9og44th4u37381q0ig02oml</string>
 	<key>API_KEY</key>
 	<string>AIzaSyCEY7mNxg-mJSj2k_X3j7W6YtTu7XEeG2k</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.friendship.where_to_eat</string>
+	<string>com.friendship.wheretoeat</string>
 	<key>PROJECT_ID</key>
 	<string>where-to-eat-e9138</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:959784569795:ios:7108a2d7e6065aa9558b76</string>
+	<string>1:959784569795:ios:c5cd7b6093dc9e54558b76</string>
 </dict>
 </plist>

@@ -7,11 +7,11 @@
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.friendship.where_to_eat</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>where_to_eat</string>
+	<string>wheretoeat</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -25,7 +25,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.959784569795-d88h1lpks4j6t29ldpkv1bl0t3ebtifc</string>
+				<string>com.googleusercontent.apps.959784569795-7da7lkn6i9og44th4u37381q0ig02oml</string>
 			</array>
 		</dict>
 	</array>
