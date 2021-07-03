@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.friendship.where_to_eat">
+    package="com.friendship.wheretoeat">
    <application
         android:label="where_to_eat"
         android:icon="@mipmap/ic_launcher">

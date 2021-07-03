@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:959784569795:android:e380860e6493d5b6558b76",
+        "mobilesdk_app_id": "1:959784569795:android:8e496197f53710fd558b76",
         "android_client_info": {
-          "package_name": "com.friendship.where_to_eat"
+          "package_name": "com.friendship.wheretoeat"
         }
       },
       "oauth_client": [
@@ -31,10 +31,10 @@
               "client_type": 3
             },
             {
-              "client_id": "959784569795-d88h1lpks4j6t29ldpkv1bl0t3ebtifc.apps.googleusercontent.com",
+              "client_id": "959784569795-7da7lkn6i9og44th4u37381q0ig02oml.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.friendship.where_to_eat"
+                "bundle_id": "com.friendship.wheretoeat"
               }
             }
           ]

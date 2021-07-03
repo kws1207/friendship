@@ -1,4 +1,4 @@
-package com.friendship.where_to_eat
+package com.friendship.wheretoeat
 
 import io.flutter.embedding.android.FlutterActivity
 
