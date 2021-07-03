@@ -19,73 +19,16 @@ class SelectScreen extends StatefulWidget {
 }
 
 class _SelectScreenState extends State<SelectScreen> {
-  int _counter = 8;
-  bool korean, bunsik, japanese, western, chinese;
   List<Menu> menuList;
+  final locationController = TextEditingController();
   final _firestore = FirebaseFirestore.instance;
   final String uid;
   static final storage = FlutterSecureStorage();
 
   _SelectScreenState(this.uid);
 
-  @override
-  void initState() {
-    korean = true;
-    bunsik = true;
-    japanese = true;
-    western = true;
-    chinese = true;
-  }
 
-  Widget championHistory(BuildContext context) {
-    return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('history')
-            .doc(uid)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final DocumentSnapshot document = snapshot.data;
-            return ListView(
-              children: List.from(document['array'])
-                  .map(
-                    (name) => Card(
-                      child: ListTile(
-                        title: Text(name),
-                      ),
-                    ),
-                  )
-                  .toList(),
-            );
-          } else {
-            return Card(
-              child: Text("Loading..."),
-            );
-          }
-        });
-  }
 
-  void _showLessMenuDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: Text("ㅠㅠ"),
-          content: Text("메뉴가 부족합니다......."),
-          actions: <Widget>[
-            // ignore: deprecated_member_use
-            FlatButton(
-              child: Text("Close"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   void _showSignOutFailDialog() {
     showDialog(
@@ -129,17 +72,7 @@ class _SelectScreenState extends State<SelectScreen> {
     );
   }
 
-  void _incrementCounter() {
-    setState(() {
-      if (_counter <= 16) _counter *= 2;
-    });
-  }
 
-  void _decrementCounter() {
-    setState(() {
-      if (_counter >= 8) _counter ~/= 2;
-    });
-  }
 
   /*
   void navigationPage() {
@@ -159,180 +92,40 @@ class _SelectScreenState extends State<SelectScreen> {
     Navigator.of(context).pushReplacementNamed('/SignInScreen');
   }
 
-  Widget _koreanCheckBox() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
+
+  Widget _searchLocationTF(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Checkbox(
-          value: korean,
-          onChanged: (value) {
-            setState(() {
-              korean = !korean;
-            });
-          },
-          checkColor: Colors.white,
-          activeColor: Colors.red,
+        Text(
+          '장소를 입력하세요',
+          style: kBlackLabelStyle,
         ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              korean = !korean;
-            });
-          },
-          child: Text(
-            '한식',
-            style: kBlackLabelStyle,
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: MediaQuery.of(context).size.height * 0.07,
+          child: TextField(
+            controller: locationController,
+            keyboardType: TextInputType.streetAddress,
+            style: TextStyle(color: Colors.red),
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.email,
+                color: Colors.red,
+              ),
+              hintText: '장소 검색',
+              hintStyle: kHintTextStyle,
+            ),
           ),
-        )
+        ),
       ],
     );
   }
 
-  Widget _bunsikCheckBox() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Checkbox(
-          value: bunsik,
-          onChanged: (value) {
-            setState(() {
-              bunsik = !bunsik;
-            });
-          },
-          checkColor: Colors.white,
-          activeColor: Colors.red,
-        ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              bunsik = !bunsik;
-            });
-          },
-          child: Text(
-            '분식 / 패스트푸드',
-            style: kBlackLabelStyle,
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _japaneseCheckBox() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Checkbox(
-          value: japanese,
-          onChanged: (value) {
-            setState(() {
-              japanese = !japanese;
-            });
-          },
-          checkColor: Colors.white,
-          activeColor: Colors.red,
-        ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              japanese = !japanese;
-            });
-          },
-          child: Text(
-            '일본음식',
-            style: kBlackLabelStyle,
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _westernCheckBox() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Checkbox(
-          value: western,
-          onChanged: (value) {
-            setState(() {
-              western = !western;
-            });
-          },
-          checkColor: Colors.white,
-          activeColor: Colors.red,
-        ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              western = !western;
-            });
-          },
-          child: Text(
-            '아시안 / 양식',
-            style: kBlackLabelStyle,
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _chineseCheckBox() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Checkbox(
-          value: chinese,
-          onChanged: (value) {
-            setState(() {
-              chinese = !chinese;
-            });
-          },
-          checkColor: Colors.white,
-          activeColor: Colors.red,
-        ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              chinese = !chinese;
-            });
-          },
-          child: Text(
-            '중국음식 (마라요리, 훠궈 등 포함)',
-            style: kBlackLabelStyle,
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _buildSelectRoundRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        FloatingActionButton(
-          heroTag: "decrementBtn", // multiple heroes exception
-          backgroundColor: Colors.grey,
-          onPressed: _decrementCounter,
-          tooltip: 'Decrement',
-          child: Icon(Icons.remove),
-        ),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.1),
-        Text("$_counter" + "강",
-            style: TextStyle(
-                color: Colors.black,
-                fontFamily: 'BMYS',
-                fontSize: 84.0,
-                fontWeight: FontWeight.normal)),
-        SizedBox(width: MediaQuery.of(context).size.width * 0.1),
-        FloatingActionButton(
-          heroTag: "incrementBtn", // multiple heroes exception
-          backgroundColor: Colors.grey,
-          onPressed: _incrementCounter,
-          tooltip: 'Increment',
-          child: Icon(Icons.add),
-        ),
-      ],
-    );
-  }
 
   Widget _buildSignOutBtn() {
     return Container(
@@ -393,34 +186,8 @@ class _SelectScreenState extends State<SelectScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.05,
-                      bottom: MediaQuery.of(context).size.height * 0.03),
-                  child: Column(
-                    children: <Widget>[
-                      _koreanCheckBox(),
-                      _bunsikCheckBox(),
-                      _japaneseCheckBox(),
-                      _westernCheckBox(),
-                      _chineseCheckBox(),
-                    ],
-                  ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0),
-                Text(
-                  '회색 버튼을 이용하여\n\n4강부터 32강까지 선택 가능합니다.',
-                  style: TextStyle(
-                    color: Colors.black,
-                    letterSpacing: 1.5,
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.normal,
-                    fontFamily: 'BMDH',
-                  ),
-                ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                _buildSelectRoundRow(),
-
+                _searchLocationTF();
                 // 월드컵 시작 버튼
                 FutureBuilder<void>(
                   future: loadCSV(),
