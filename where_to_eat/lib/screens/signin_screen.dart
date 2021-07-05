@@ -118,13 +118,12 @@ class _SignInScreenState extends State<SignInScreen> {
           child: TextField(
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Colors.orange),
             decoration: InputDecoration(
               border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
                 Icons.email,
-                color: Colors.red,
+                color: Colors.orange,
               ),
               hintText: '이메일 주소',
               hintStyle: kHintTextStyle,
@@ -152,13 +151,12 @@ class _SignInScreenState extends State<SignInScreen> {
             controller: passwordController,
             obscureText: true,
             keyboardType: TextInputType.emailAddress,
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Colors.orange),
             decoration: InputDecoration(
               border: InputBorder.none,
-              contentPadding: EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
                 Icons.lock,
-                color: Colors.red,
+                color: Colors.orange,
               ),
               hintText: '비밀번호',
               hintStyle: kHintTextStyle,
@@ -218,7 +216,7 @@ class _SignInScreenState extends State<SignInScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
-        color: Colors.red,
+        color: Colors.orange,
         child: Text(
           '로그인',
           style: kWhiteLabelStyle,

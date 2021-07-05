@@ -10,6 +10,7 @@ final kBlackLabelStyle = TextStyle(
   color: Colors.black,
   fontWeight: FontWeight.normal,
   fontFamily: 'BMDH',
+  fontSize: 12,
 );
 
 final kWhiteLabelStyle = TextStyle(
@@ -27,7 +28,7 @@ final kNameStyle = TextStyle(
 );
 
 final kBoxDecorationStyle = BoxDecoration(
-  color: Color(0xFFFFCCCB),
+  color: Colors.orange[100],
   borderRadius: BorderRadius.circular(10.0),
   boxShadow: [
     BoxShadow(

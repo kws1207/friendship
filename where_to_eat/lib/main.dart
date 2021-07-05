@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:where_to_eat/screens/signin_screen.dart';
 import 'package:where_to_eat/screens/select_screen.dart';
+import 'package:where_to_eat/screens/list_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -26,6 +27,8 @@ class MyApp extends StatelessWidget {
         '/SignInScreen': (BuildContext context) => SignInScreen(),
         // ignore: missing_required_param
         '/SelectScreen': (BuildContext context) => SelectScreen(),
+        // ignore: missing_required_param
+        '/ListScreen': (BuildContext context) => ListScreen(),
       },
       // title: '메뉴 이상형월드컵',
       // theme: ThemeData.dark(),

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:where_to_eat/screens/list_screen.dart';
 
 class SelectScreen extends StatefulWidget {
   final String uid;
@@ -19,23 +20,15 @@ class SelectScreen extends StatefulWidget {
 }
 
 class _SelectScreenState extends State<SelectScreen> {
-  int _counter = 8;
-  bool korean, bunsik, japanese, western, chinese;
-  List<Menu> menuList;
   final _firestore = FirebaseFirestore.instance;
   final String uid;
   static final storage = FlutterSecureStorage();
+  final locationController = TextEditingController();
 
   _SelectScreenState(this.uid);
 
   @override
-  void initState() {
-    korean = true;
-    bunsik = true;
-    japanese = true;
-    western = true;
-    chinese = true;
-  }
+  void initState() {}
 
   Widget championHistory(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
@@ -65,25 +58,37 @@ class _SelectScreenState extends State<SelectScreen> {
         });
   }
 
-  void _showLessMenuDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: Text("ㅠㅠ"),
-          content: Text("메뉴가 부족합니다......."),
-          actions: <Widget>[
-            // ignore: deprecated_member_use
-            FlatButton(
-              child: Text("Close"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+  Widget _searchLocationTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          '장소를 입력하세요',
+          style: kBlackLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: MediaQuery.of(context).size.height * 0.07,
+          child: TextField(
+            controller: locationController,
+            keyboardType: TextInputType.streetAddress,
+            style: TextStyle(
+              color: Colors.orange,
             ),
-          ],
-        );
-      },
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              prefixIcon: Icon(
+                Icons.email,
+                color: Colors.orange,
+              ),
+              hintText: '장소 검색',
+              hintStyle: kHintTextStyle,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -129,36 +134,21 @@ class _SelectScreenState extends State<SelectScreen> {
     );
   }
 
-  void _incrementCounter() {
-    setState(() {
-      if (_counter <= 16) _counter *= 2;
-    });
-  }
-
-  void _decrementCounter() {
-    setState(() {
-      if (_counter >= 8) _counter ~/= 2;
-    });
-  }
-
-  /*
   void navigationPage() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
       //new
-      settings: const RouteSettings(name: '/WorldcupScreen'),
-      builder: (context) => WorldcupScreen(
-        counter: _counter,
-        menuList: menuList,
+      settings: const RouteSettings(name: '/ListScreen'),
+      builder: (context) => ListScreen(
         uid: uid,
       ),
     ));
   }
-  */
 
   void navigationToSignInPage() {
     Navigator.of(context).pushReplacementNamed('/SignInScreen');
   }
 
+/*
   Widget _koreanCheckBox() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -171,7 +161,7 @@ class _SelectScreenState extends State<SelectScreen> {
             });
           },
           checkColor: Colors.white,
-          activeColor: Colors.red,
+          activeColor: Colors.orange,
         ),
         InkWell(
           onTap: () {
@@ -200,7 +190,7 @@ class _SelectScreenState extends State<SelectScreen> {
             });
           },
           checkColor: Colors.white,
-          activeColor: Colors.red,
+          activeColor: Colors.orange,
         ),
         InkWell(
           onTap: () {
@@ -229,7 +219,7 @@ class _SelectScreenState extends State<SelectScreen> {
             });
           },
           checkColor: Colors.white,
-          activeColor: Colors.red,
+          activeColor: Colors.orange,
         ),
         InkWell(
           onTap: () {
@@ -258,7 +248,7 @@ class _SelectScreenState extends State<SelectScreen> {
             });
           },
           checkColor: Colors.white,
-          activeColor: Colors.red,
+          activeColor: Colors.orange,
         ),
         InkWell(
           onTap: () {
@@ -287,7 +277,7 @@ class _SelectScreenState extends State<SelectScreen> {
             });
           },
           checkColor: Colors.white,
-          activeColor: Colors.red,
+          activeColor: Colors.orange,
         ),
         InkWell(
           onTap: () {
@@ -333,11 +323,13 @@ class _SelectScreenState extends State<SelectScreen> {
       ],
     );
   }
+  */
 
   Widget _buildSignOutBtn() {
     return Container(
       padding: EdgeInsets.symmetric(
-          vertical: MediaQuery.of(context).size.width * 0.01, horizontal: 25.0),
+        vertical: MediaQuery.of(context).size.width * 0.01,
+      ),
       width: double.infinity,
       // ignore: deprecated_member_use
       child: RaisedButton(
@@ -357,7 +349,7 @@ class _SelectScreenState extends State<SelectScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
-        color: Colors.red[300],
+        color: Colors.orange[300],
         child: Text(
           '로그아웃',
           style: kWhiteLabelStyle,
@@ -371,9 +363,9 @@ class _SelectScreenState extends State<SelectScreen> {
     print(uid);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.orange,
         title: Text(
-          '메뉴 이상형 월드컵',
+          '어디갈랭',
           style: kWhiteLabelStyle,
         ),
         actions: <Widget>[
@@ -390,42 +382,48 @@ class _SelectScreenState extends State<SelectScreen> {
         children: <Widget>[
           Container(
             height: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                // 월드컵 시작 버튼
-                FutureBuilder<void>(
-                  future: loadCSV(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    return Container(
-                      padding: EdgeInsets.symmetric(
+            child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.height * 0.05,
+                vertical: MediaQuery.of(context).size.height * 0.11,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  _searchLocationTF(),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                  // 시작 버튼
+                  FutureBuilder<void>(
+                    future: loadCSV(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      return Container(
+                        padding: EdgeInsets.symmetric(
                           vertical: MediaQuery.of(context).size.width * 0.03,
-                          horizontal: 25.0),
-                      width: double.infinity,
-                      // ignore: deprecated_member_use
-                      child: RaisedButton(
-                        elevation: 5.0,
-                        onPressed: () {
-                          menuList = getMenuList(_counter, korean, bunsik,
-                              japanese, western, chinese);
-                          if (menuList == null) _showLessMenuDialog();
-                          //navigationPage();
-                        },
-                        padding: EdgeInsets.all(15.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
                         ),
-                        color: Colors.red,
-                        child: Text(
-                          '월드컵 시작!',
-                          style: kWhiteLabelStyle,
+                        width: double.infinity,
+                        // ignore: deprecated_member_use
+                        child: RaisedButton(
+                          elevation: 5.0,
+                          onPressed: () {
+                            navigationPage();
+                          },
+                          padding: EdgeInsets.all(15.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0),
+                          ),
+                          color: Colors.orange,
+                          child: Text(
+                            '식당 찾기',
+                            style: kWhiteLabelStyle,
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-                _buildSignOutBtn(),
-              ],
+                      );
+                    },
+                  ),
+                  _buildSignOutBtn(),
+                ],
+              ),
             ),
           ),
         ],
