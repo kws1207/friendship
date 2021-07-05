@@ -306,6 +306,8 @@ PODS:
     - FirebaseCore (~> 7.0)
     - GTMSessionFetcher/Core (~> 1.4)
   - Flutter (1.0.0)
+  - flutter_kakao_map (0.0.1):
+    - Flutter
   - flutter_secure_storage (3.3.1):
     - Flutter
   - google_sign_in (0.0.1):
@@ -395,6 +397,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
   - Flutter (from `Flutter`)
+  - flutter_kakao_map (from `.symlinks/plugins/flutter_kakao_map/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
@@ -436,6 +439,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_crashlytics/ios"
   Flutter:
     :path: Flutter
+  flutter_kakao_map:
+    :path: ".symlinks/plugins/flutter_kakao_map/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   google_sign_in:
@@ -461,6 +466,7 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 42c86e7b02ff75b7f27f85833bf5dcb5f38a9774
   FirebaseStorage: 5002b1895bfe74a5ce92ad54f966e6162d0da2e5
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  flutter_kakao_map: 9a532d8252b361f246a7ee4524ccd374c82bac8c
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   google_sign_in: 6bd214b9c154f881422f5fe27b66aaa7bbd580cc
   GoogleAppMeasurement: 8d3c0aeede16ab7764144b5a4ca8e1d4323841b7

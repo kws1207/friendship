@@ -54,26 +54,26 @@ class _SignInScreenState extends State<SignInScreen> {
     print("google login 1");
     final GoogleSignInAuthentication googleSignInAuthentication =
         await googleSignInAccount.authentication;
-     print("google login 2");
+    print("google login 2");
     final AuthCredential credential = GoogleAuthProvider.credential(
       idToken: googleSignInAuthentication.idToken,
       accessToken: googleSignInAuthentication.accessToken,
     );
-     print("google login 3");
+    print("google login 3");
     user = (await auth.signInWithCredential(credential)).user;
     if (user != null) {
       _userUID = user.uid;
     }
-    /*
+
     if (AdditionalUserInfo().isNewUser) {
-      _firestore.collection('history').doc(_userUID).set(
+      _firestore.collection('favorites').doc(_userUID).set(
         {
-          'array': FieldValue.arrayUnion(["--- 이전 월드컵에서 우승한 메뉴들 ---"]),
+          'array': FieldValue.arrayUnion(["--- 찜한 식당 목록 ---"]),
         },
         SetOptions(merge: true),
       );
     }
-    */
+
     print("google login finish");
     return user;
   }
@@ -242,12 +242,13 @@ class _SignInScreenState extends State<SignInScreen> {
             (_) {
               user = AuthService().userInfo;
               _userUID = user.uid;
-              _firestore.collection('history').doc(_userUID).set(
+              _firestore.collection('favorites').doc(_userUID).set(
                 {
-                  'array': FieldValue.arrayUnion(["--- 이전 월드컵에서 우승한 메뉴들 ---"]),
+                  'array': FieldValue.arrayUnion(["--- 찜한 식당 목록 ---"]),
                 },
                 SetOptions(merge: true),
               );
+
               navigationPage();
             },
             onError: (error) => showNativeDialog(error, context),

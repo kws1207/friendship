@@ -27,8 +27,33 @@ class _SelectScreenState extends State<SelectScreen> {
 
   _SelectScreenState(this.uid);
 
-
-
+  Widget championHistory(BuildContext context) {
+    return StreamBuilder<DocumentSnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('favorites')
+            .doc(uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final DocumentSnapshot document = snapshot.data;
+            return ListView(
+              children: List.from(document['array'])
+                  .map(
+                    (name) => Card(
+                      child: ListTile(
+                        title: Text(name),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            );
+          } else {
+            return Card(
+              child: Text("Loading..."),
+            );
+          }
+        });
+  }
 
   void _showSignOutFailDialog() {
     showDialog(
@@ -72,8 +97,6 @@ class _SelectScreenState extends State<SelectScreen> {
     );
   }
 
-
-
   /*
   void navigationPage() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -92,8 +115,7 @@ class _SelectScreenState extends State<SelectScreen> {
     Navigator.of(context).pushReplacementNamed('/SignInScreen');
   }
 
-
-  Widget _searchLocationTF(){
+  Widget _searchLocationTF() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -125,7 +147,6 @@ class _SelectScreenState extends State<SelectScreen> {
       ],
     );
   }
-
 
   Widget _buildSignOutBtn() {
     return Container(
@@ -187,7 +208,7 @@ class _SelectScreenState extends State<SelectScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                _searchLocationTF();
+                _searchLocationTF(),
                 // 월드컵 시작 버튼
                 FutureBuilder<void>(
                   future: loadCSV(),
@@ -201,10 +222,9 @@ class _SelectScreenState extends State<SelectScreen> {
                       child: RaisedButton(
                         elevation: 5.0,
                         onPressed: () {
-                          menuList = getMenuList(_counter, korean, bunsik,
+                          /*menuList = getMenuList(_counter, korean, bunsik,
                               japanese, western, chinese);
-                          if (menuList == null)
-                            _showLessMenuDialog();
+                          if (menuList == null) _showLessMenuDialog();*/
                           //navigationPage();
                         },
                         padding: EdgeInsets.all(15.0),

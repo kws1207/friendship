@@ -31,6 +31,7 @@ dependencies:
   cloud_firestore: ^0.16.0+1
   flutter_secure_storage: ^3.3.5
   url_launcher: ^5.7.10
+  flutter_kakao_map: ^0.0.4
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -59,9 +60,9 @@ flutter:
   assets:
     - assets/logos/apple.png
     - assets/logos/google.png
-    - assets/images/splash_img.jpeg
-    - assets/images/crown.png
-   
+    #- assets/images/splash_img.jpeg
+    #- assets/images/crown.png
+    
     # # An image asset can refer to one or more resolution-specific "variants", see
   # #https://flutter.dev/assets-and-images/#resolution-aware.
 

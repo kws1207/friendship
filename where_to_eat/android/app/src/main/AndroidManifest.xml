@@ -1,8 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.friendship.wheretoeat">
+    <uses-permission android:name="android.permission.INTERNET">
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION">
+    </uses-permission>
+    <meta-data
+      android:name="com.kakao.sdk.AppKey" android:value="8zraieNcAN88cpyi/+FY8aHYzM0="
+      />
    <application
-        android:label="where_to_eat"
-        android:icon="@mipmap/ic_launcher">
+        android:label="where_to_eat">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
