@@ -17,6 +17,11 @@ class ListScreen extends StatefulWidget {
 class _ListScreenState extends State<ListScreen> {
   final String uid;
   bool korean, bunsik, japanese, western, chinese;
+  final items = List<String>.generate(10, (i) => 'Restaurant ${i + 1}');
+  bool _pinned = true;
+  bool _snap = false;
+  bool _floating = false;
+  DismissDirection _direction = DismissDirection.endToStart;
 
   _ListScreenState(this.uid);
 
@@ -177,24 +182,68 @@ class _ListScreenState extends State<ListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            height: MediaQuery.of(context).size.height * 0.15,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.03,
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            pinned: _pinned,
+            snap: _snap,
+            floating: _floating,
+            backgroundColor: Colors.orange,
+            title: Text(
+              '식당 골라보쇼',
+              style: kWhiteLabelStyle,
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 50,
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.15,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height * 0.03,
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      _koreanCheckBox(),
+                      _bunsikCheckBox(),
+                      _japaneseCheckBox(),
+                      _westernCheckBox(),
+                      _chineseCheckBox(),
+                    ],
+                  ),
+                ),
               ),
-              child: Row(
-                children: <Widget>[
-                  _koreanCheckBox(),
-                  _bunsikCheckBox(),
-                  _japaneseCheckBox(),
-                  _westernCheckBox(),
-                  _chineseCheckBox(),
-                ],
-              ),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                final item = items[index];
+                return Dismissible(
+                  // Each Dismissible must contain a Key. Keys allow Flutter to
+                  // uniquely identify widgets.
+                  key: Key(item),
+                  // Provide a function that tells the app
+                  // what to do after an item has been swiped away.
+                  direction: _direction,
+                  onDismissed: (direction) {
+                    // Remove the item from the data source.
+                    setState(() {
+                      items.removeAt(index);
+                    });
+
+                    // Then show a snackbar.
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('$item dismissed')));
+                  },
+                  // Show a red background as the item is swiped away.
+                  background: Container(color: Colors.red),
+                  child: ListTile(title: Text('$item')),
+                );
+              },
+              childCount: items.length,
             ),
           ),
         ],
