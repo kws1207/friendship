@@ -72,21 +72,7 @@ class _SelectScreenState extends State<SelectScreen> {
           alignment: Alignment.centerLeft,
           decoration: kBoxDecorationStyle,
           height: MediaQuery.of(context).size.height * 0.07,
-          child: TextField(
-            controller: locationController,
-            keyboardType: TextInputType.streetAddress,
-            style: TextStyle(
-              color: Colors.orange,
-            ),
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              prefixIcon: Icon(
-                Icons.email,
-                color: Colors.orange,
-              ),
-              hintText: '장소 검색',
-              hintStyle: kHintTextStyle,
-            ),
+          child: InkWell(
             onTap: () async {
               KopoModel model = await Navigator.push(
                 context,
@@ -95,6 +81,23 @@ class _SelectScreenState extends State<SelectScreen> {
                 ),
               );
             },
+            child: TextField(
+              enabled: false,
+              controller: locationController,
+              keyboardType: TextInputType.streetAddress,
+              style: TextStyle(
+                color: Colors.orange,
+              ),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                prefixIcon: Icon(
+                  Icons.email,
+                  color: Colors.orange,
+                ),
+                hintText: '장소 검색',
+                hintStyle: kHintTextStyle,
+              ),
+            ),
           ),
         ),
       ],
@@ -350,7 +353,9 @@ class _SelectScreenState extends State<SelectScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.list),
-            onPressed: () => {_pushSaved()},
+            onPressed: () => {
+              _pushSaved(),
+            },
           ),
         ],
         actionsIconTheme: IconThemeData(
