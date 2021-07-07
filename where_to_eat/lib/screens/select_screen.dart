@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:where_to_eat/screens/list_screen.dart';
+import 'package:kopo/kopo.dart';
 
 class SelectScreen extends StatefulWidget {
   final String uid;
@@ -86,6 +87,14 @@ class _SelectScreenState extends State<SelectScreen> {
               hintText: '장소 검색',
               hintStyle: kHintTextStyle,
             ),
+            onTap: () async {
+              KopoModel model = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Kopo(),
+                ),
+              );
+            },
           ),
         ),
       ],
