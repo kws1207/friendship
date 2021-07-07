@@ -79,13 +79,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
           child: TextField(
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Colors.orange),
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
                 Icons.email,
-                color: Colors.red,
+                color: Colors.orange,
               ),
               hintText: '이메일 주소',
               hintStyle: kHintTextStyle,
@@ -113,13 +113,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
             controller: passwordController,
             obscureText: true,
             keyboardType: TextInputType.emailAddress,
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Colors.orange),
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
                 Icons.lock,
-                color: Colors.red,
+                color: Colors.orange,
               ),
               hintText: '비밀번호',
               hintStyle: kHintTextStyle,
@@ -147,13 +147,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
             controller: passwordCheckController,
             obscureText: true,
             keyboardType: TextInputType.emailAddress,
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Colors.orange),
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
                 Icons.lock,
-                color: Colors.red,
+                color: Colors.orange,
               ),
               hintText: '비밀번호 재입력',
               hintStyle: kHintTextStyle,
@@ -209,7 +209,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
         ),
-        color: Colors.red,
+        color: Colors.orange,
         child: Text(
           '회원가입',
           style: kWhiteLabelStyle,
@@ -231,7 +231,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             fontWeight: FontWeight.normal,
           ),
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.orange,
         toolbarHeight: 70,
       ),
       body: Stack(
