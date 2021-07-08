@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:where_to_eat/utilities/constants.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:where_to_eat/domain/classes.dart';
 
 class ListScreen extends StatefulWidget {
@@ -222,7 +223,63 @@ class _ListScreenState extends State<ListScreen> {
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 final item = items[index];
-                return Dismissible(
+                return Slidable(
+                  key: Key(item),
+                  actionPane: SlidableDrawerActionPane(),
+                  actionExtentRatio: 0.25,
+                  child: Container(
+                    color: Colors.white,
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.indigoAccent,
+                        child: Text('$item'),
+                        foregroundColor: Colors.white,
+                      ),
+                      title: Text('Tile $item'),
+                      subtitle: Text('SlidableDrawerDelegate'),
+                    ),
+                  ),
+                  actions: <Widget>[
+                    IconSlideAction(
+                      caption: '찜하기',
+                      color: Colors.blue,
+                      icon: Icons.star,
+                      onTap: () => print('찜하기'),
+                    ),
+                    IconSlideAction(
+                      caption: '공유하기',
+                      color: Colors.indigo,
+                      icon: Icons.share,
+                      onTap: () => print('공유하기'),
+                    ),
+                  ],
+                  secondaryActions: <Widget>[
+                    /*IconSlideAction(
+                      caption: '영구 차단',
+                      color: Colors.black45,
+                      icon: Icons.more_horiz,
+                      onTap: () => print('영구 차단'),
+                    ),*/
+                    IconSlideAction(
+                      caption: '숨기기',
+                      color: Colors.red,
+                      icon: Icons.delete,
+                      onTap: () => print('숨기기'),
+                    ),
+                  ],
+                  dismissal: SlidableDismissal(
+                    child: SlidableDrawerDismissal(key: Key(item)),
+                    onDismissed: (actionType) {
+                      setState(() {
+                        items.removeAt(index);
+                      });
+                    },
+                    dismissThresholds: <SlideActionType, double>{
+                      SlideActionType.primary: 1.0
+                    },
+                  ),
+                );
+                /*return Dismissible(
                   // Each Dismissible must contain a Key. Keys allow Flutter to
                   // uniquely identify widgets.
                   key: Key(item),
@@ -242,7 +299,7 @@ class _ListScreenState extends State<ListScreen> {
                   // Show a red background as the item is swiped away.
                   background: Container(color: Colors.red),
                   child: ListTile(title: Text('$item')),
-                );
+                );*/
               },
               childCount: items.length,
             ),
