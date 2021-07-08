@@ -18,22 +18,54 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   final String uid;
+  bool favorites;
   bool korean, bunsik, japanese, western, chinese;
   final items = List<String>.generate(10, (i) => 'Restaurant ${i + 1}');
+  final isFavorite = List<bool>.generate(10, (i) => false);
   bool _pinned = true;
   bool _snap = false;
-  bool _floating = false;
-  DismissDirection _direction = DismissDirection.endToStart;
+  bool _floating = true;
+  final SlidableController slidableController = SlidableController();
 
   _ListScreenState(this.uid);
 
   @override
   void initState() {
+    favorites = false;
     korean = true;
     bunsik = true;
     japanese = true;
     western = true;
     chinese = true;
+  }
+
+  Widget _favoritesCheckBox() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Checkbox(
+          value: favorites,
+          onChanged: (value) {
+            setState(() {
+              favorites = !favorites;
+            });
+          },
+          checkColor: Colors.white,
+          activeColor: Colors.orange,
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              favorites = !favorites;
+            });
+          },
+          child: Text(
+            '찜한 식당만 보기',
+            style: kBlackLabelStyle,
+          ),
+        )
+      ],
+    );
   }
 
   Widget _koreanCheckBox() {
@@ -198,23 +230,28 @@ class _ListScreenState extends State<ListScreen> {
           ),
           SliverToBoxAdapter(
             child: SizedBox(
-              height: 50,
+              height: 100,
               child: Container(
-                height: MediaQuery.of(context).size.height * 0.15,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height * 0.03,
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      _koreanCheckBox(),
-                      _bunsikCheckBox(),
-                      _japaneseCheckBox(),
-                      _westernCheckBox(),
-                      _chineseCheckBox(),
-                    ],
-                  ),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        _favoritesCheckBox(),
+                      ],
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: <Widget>[
+                          _koreanCheckBox(),
+                          _bunsikCheckBox(),
+                          _japaneseCheckBox(),
+                          _westernCheckBox(),
+                          _chineseCheckBox(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -223,8 +260,10 @@ class _ListScreenState extends State<ListScreen> {
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 final item = items[index];
-                return Slidable(
+                final isfav = isFavorite[index];
+                return Slidable.builder(
                   key: Key(item),
+                  controller: slidableController,
                   actionPane: SlidableDrawerActionPane(),
                   actionExtentRatio: 0.25,
                   child: Container(
@@ -239,39 +278,61 @@ class _ListScreenState extends State<ListScreen> {
                       subtitle: Text('SlidableDrawerDelegate'),
                     ),
                   ),
-                  actions: <Widget>[
-                    IconSlideAction(
-                      caption: '찜하기',
-                      color: Colors.blue,
-                      icon: Icons.star,
-                      onTap: () => print('찜하기'),
-                    ),
-                    IconSlideAction(
-                      caption: '공유하기',
-                      color: Colors.indigo,
-                      icon: Icons.share,
-                      onTap: () => print('공유하기'),
-                    ),
-                  ],
-                  secondaryActions: <Widget>[
-                    /*IconSlideAction(
-                      caption: '영구 차단',
-                      color: Colors.black45,
-                      icon: Icons.more_horiz,
-                      onTap: () => print('영구 차단'),
-                    ),*/
-                    IconSlideAction(
-                      caption: '숨기기',
-                      color: Colors.red,
-                      icon: Icons.delete,
-                      onTap: () => print('숨기기'),
-                    ),
-                  ],
+                  actionDelegate: SlideActionBuilderDelegate(
+                    actionCount: 2,
+                    builder: (context, actionIndex, animation, mode) {
+                      if (actionIndex == 0)
+                        return IconSlideAction(
+                          caption: '찜하기',
+                          color: Colors.blue,
+                          icon: isfav ? Icons.star : Icons.star_border,
+                          onTap: () => {
+                            setState(() {
+                              isFavorite[index] = !isFavorite[index];
+                            }),
+                            print('찜하기'),
+                          },
+                        );
+                      else
+                        return IconSlideAction(
+                          caption: '공유하기',
+                          color: Colors.indigo,
+                          icon: Icons.share,
+                          onTap: () => print('공유하기'),
+                        );
+                    },
+                  ),
+                  secondaryActionDelegate: SlideActionBuilderDelegate(
+                    actionCount: 1,
+                    builder: (context, actionIndex, animation, mode) {
+                      return IconSlideAction(
+                        caption: '숨기기',
+                        color: Colors.red,
+                        icon: Icons.delete,
+                        onTap: () async {
+                          var state = Slidable.of(context);
+                          state.dismiss();
+                        },
+                      );
+                    },
+                  ),
                   dismissal: SlidableDismissal(
                     child: SlidableDrawerDismissal(key: Key(item)),
                     onDismissed: (actionType) {
                       setState(() {
-                        items.removeAt(index);
+                        String deletedItem = items.removeAt(index);
+                        ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text("\"${deletedItem}\" 삭제됨"),
+                            action: SnackBarAction(
+                                label: "되돌리기",
+                                onPressed: () => setState(
+                                      () => items.insert(index, deletedItem),
+                                    ) // this is what you needed
+                                ),
+                          ),
+                        );
                       });
                     },
                     dismissThresholds: <SlideActionType, double>{
