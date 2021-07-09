@@ -25,11 +25,14 @@ class _SelectScreenState extends State<SelectScreen> {
   final String uid;
   static final storage = FlutterSecureStorage();
   final locationController = TextEditingController();
+  KopoModel kopoModel = null;
 
   _SelectScreenState(this.uid);
 
   @override
-  void initState() {}
+  void initState() {
+    super.initState();
+  }
 
   Widget championHistory(BuildContext context) {
     return StreamBuilder<DocumentSnapshot>(
@@ -64,7 +67,7 @@ class _SelectScreenState extends State<SelectScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          '장소를 입력하세요',
+          '장소를 검색하세요',
           style: kBlackLabelStyle,
         ),
         SizedBox(height: 10.0),
@@ -80,6 +83,11 @@ class _SelectScreenState extends State<SelectScreen> {
                   builder: (context) => Kopo(),
                 ),
               );
+              if (model != null) {
+                setState(() {
+                  kopoModel = model;
+                });
+              }
             },
             child: TextField(
               enabled: false,
@@ -94,7 +102,7 @@ class _SelectScreenState extends State<SelectScreen> {
                   Icons.email,
                   color: Colors.orange,
                 ),
-                hintText: '장소 검색',
+                hintText: (kopoModel == null) ? '장소 검색' : kopoModel.address,
                 hintStyle: kHintTextStyle,
               ),
             ),
@@ -110,8 +118,8 @@ class _SelectScreenState extends State<SelectScreen> {
       builder: (BuildContext context) {
         // return object of type Dialog
         return AlertDialog(
-          title: Text("ㅠㅠ"),
-          content: Text("로그아웃 실패!"),
+          title: Text("Error"),
+          content: Text("로그아웃 실패.. 관리자에게 문의하세요"),
           actions: <Widget>[
             // ignore: deprecated_member_use
             FlatButton(
@@ -152,6 +160,7 @@ class _SelectScreenState extends State<SelectScreen> {
       settings: const RouteSettings(name: '/ListScreen'),
       builder: (context) => ListScreen(
         uid: uid,
+        kopoModel: kopoModel,
       ),
     ));
   }
@@ -159,153 +168,6 @@ class _SelectScreenState extends State<SelectScreen> {
   void navigationToSignInPage() {
     Navigator.of(context).pushReplacementNamed('/SignInScreen');
   }
-
-/*
-  Widget _koreanCheckBox() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Checkbox(
-          value: korean,
-          onChanged: (value) {
-            setState(() {
-              korean = !korean;
-            });
-          },
-          checkColor: Colors.white,
-          activeColor: Colors.orange,
-        ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              korean = !korean;
-            });
-          },
-          child: Text(
-            '한식',
-            style: kBlackLabelStyle,
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _bunsikCheckBox() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Checkbox(
-          value: bunsik,
-          onChanged: (value) {
-            setState(() {
-              bunsik = !bunsik;
-            });
-          },
-          checkColor: Colors.white,
-          activeColor: Colors.orange,
-        ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              bunsik = !bunsik;
-            });
-          },
-          child: Text(
-            '분식 / 패스트푸드',
-            style: kBlackLabelStyle,
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _japaneseCheckBox() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Checkbox(
-          value: japanese,
-          onChanged: (value) {
-            setState(() {
-              japanese = !japanese;
-            });
-          },
-          checkColor: Colors.white,
-          activeColor: Colors.orange,
-        ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              japanese = !japanese;
-            });
-          },
-          child: Text(
-            '일본음식',
-            style: kBlackLabelStyle,
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _westernCheckBox() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Checkbox(
-          value: western,
-          onChanged: (value) {
-            setState(() {
-              western = !western;
-            });
-          },
-          checkColor: Colors.white,
-          activeColor: Colors.orange,
-        ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              western = !western;
-            });
-          },
-          child: Text(
-            '아시안 / 양식',
-            style: kBlackLabelStyle,
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget _chineseCheckBox() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Checkbox(
-          value: chinese,
-          onChanged: (value) {
-            setState(() {
-              chinese = !chinese;
-            });
-          },
-          checkColor: Colors.white,
-          activeColor: Colors.orange,
-        ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              chinese = !chinese;
-            });
-          },
-          child: Text(
-            '중국음식 (마라요리, 훠궈 등 포함)',
-            style: kBlackLabelStyle,
-          ),
-        ),
-      ],
-    );
-  }
-  */
 
   Widget _buildSignOutBtn() {
     return Container(
@@ -334,6 +196,33 @@ class _SelectScreenState extends State<SelectScreen> {
         color: Colors.orange[300],
         child: Text(
           '로그아웃',
+          style: kWhiteLabelStyle,
+        ),
+      ),
+    );
+  }
+
+  Widget _searchRestaurantBtn() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.width * 0.03,
+      ),
+      width: double.infinity,
+      // ignore: deprecated_member_use
+      child: RaisedButton(
+        elevation: 5.0,
+        onPressed: () {
+          if (kopoModel != null) {
+            navigationPage();
+          }
+        },
+        padding: EdgeInsets.all(15.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        color: (kopoModel != null) ? Colors.orange : Colors.grey,
+        child: Text(
+          (kopoModel != null) ? '식당 찾기' : '먼저 장소를 검색하세요',
           style: kWhiteLabelStyle,
         ),
       ),
@@ -378,33 +267,7 @@ class _SelectScreenState extends State<SelectScreen> {
                   _searchLocationTF(),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   // 시작 버튼
-                  FutureBuilder<void>(
-                    future: loadCSV(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      return Container(
-                        padding: EdgeInsets.symmetric(
-                          vertical: MediaQuery.of(context).size.width * 0.03,
-                        ),
-                        width: double.infinity,
-                        // ignore: deprecated_member_use
-                        child: RaisedButton(
-                          elevation: 5.0,
-                          onPressed: () {
-                            navigationPage();
-                          },
-                          padding: EdgeInsets.all(15.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0),
-                          ),
-                          color: Colors.orange,
-                          child: Text(
-                            '식당 찾기',
-                            style: kWhiteLabelStyle,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                  _searchRestaurantBtn(),
                   _buildSignOutBtn(),
                 ],
               ),

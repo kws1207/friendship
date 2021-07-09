@@ -28,7 +28,7 @@ final kNameStyle = TextStyle(
 );
 
 final kBoxDecorationStyle = BoxDecoration(
-  color: Colors.orange[100],
+  color: Colors.orange[200],
   borderRadius: BorderRadius.circular(10.0),
   boxShadow: [
     BoxShadow(
