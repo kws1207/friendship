@@ -243,7 +243,7 @@ class _ListScreenState extends State<ListScreen> {
                     IconSlideAction(
                       caption: '찜하기',
                       color: Colors.blue,
-                      icon: Icons.star,
+                      icon: Icons.star_border_outlined,
                       onTap: () => print('찜하기'),
                     ),
                     IconSlideAction(
