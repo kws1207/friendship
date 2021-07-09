@@ -27,8 +27,8 @@ class _ListScreenState extends State<ListScreen> {
   bool favorites;
   bool korean, bunsik, japanese, western, chinese;
   //final items = List<String>.generate(10, (i) => 'Restaurant ${i + 1}');
-  List<Restaurant> restaurants;
-  final isFavorite = List<bool>.generate(10, (i) => false);
+  List<Restaurant> restaurants = [];
+  final isFavorite = List<bool>.generate(15, (i) => false);
   bool _pinned = true;
   bool _snap = false;
   bool _floating = true;
@@ -41,10 +41,10 @@ class _ListScreenState extends State<ListScreen> {
     super.initState();
     favorites = false;
     korean = true;
-    bunsik = true;
-    japanese = true;
-    western = true;
-    chinese = true;
+    bunsik = false;
+    japanese = false;
+    western = false;
+    chinese = false;
   }
 
   Widget _favoritesCheckBox() {
@@ -227,7 +227,8 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   List<Restaurant> parseRestaurants(String responseBody) {
-    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    final parsed =
+        json.decode(responseBody)["documents"].cast<Map<String, dynamic>>();
 
     return parsed.map<Restaurant>((json) => Restaurant.fromJson(json)).toList();
   }
@@ -237,9 +238,11 @@ class _ListScreenState extends State<ListScreen> {
         'https://dapi.kakao.com/v2/local/search/keyword.json?query=' + place);
     var response = await http.post(url,
         headers: {'Authorization': 'KakaoAK 2d1e034b85ed5af50b57147b95bbd43e'});
-    print('Response status: ${response.statusCode}');
-    printWrapped('Response body: ${response.body}');
-    restaurants = parseRestaurants(response.body);
+    //print('Response status: ${response.statusCode}');
+    //printWrapped('Response body: ${response.body}');
+    setState(() {
+      restaurants = parseRestaurants(response.body);
+    });
   }
 
   @override
@@ -301,11 +304,11 @@ class _ListScreenState extends State<ListScreen> {
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.indigoAccent,
-                        child: Text('$item.place_name'),
+                        child: Text(item.place_name),
                         foregroundColor: Colors.white,
                       ),
-                      title: Text('$item.place_name'),
-                      subtitle: Text('$item.category_name'),
+                      title: Text(item.place_name),
+                      subtitle: Text(item.category_name),
                     ),
                   ),
                   actionDelegate: SlideActionBuilderDelegate(
