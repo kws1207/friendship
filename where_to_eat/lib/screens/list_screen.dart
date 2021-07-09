@@ -3,37 +3,42 @@ import 'package:flutter/foundation.dart';
 import 'package:kopo/kopo.dart';
 import 'package:where_to_eat/utilities/constants.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_kakao_map/flutter_kakao_map.dart';
-import 'package:flutter_kakao_map/kakao_maps_flutter_platform_interface.dart';
 import 'package:where_to_eat/domain/classes.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ListScreen extends StatefulWidget {
   final String uid;
+  final KopoModel kopoModel;
 
   const ListScreen({
     Key key,
     @required this.uid,
+    @required this.kopoModel,
   }) : super(key: key);
 
   @override
-  _ListScreenState createState() => _ListScreenState(uid);
+  _ListScreenState createState() => _ListScreenState(uid, kopoModel);
 }
 
 class _ListScreenState extends State<ListScreen> {
   final String uid;
+  final KopoModel kopoModel;
   bool favorites;
   bool korean, bunsik, japanese, western, chinese;
-  final items = List<String>.generate(10, (i) => 'Restaurant ${i + 1}');
+  //final items = List<String>.generate(10, (i) => 'Restaurant ${i + 1}');
+  List<Restaurant> restaurants;
   final isFavorite = List<bool>.generate(10, (i) => false);
   bool _pinned = true;
   bool _snap = false;
   bool _floating = true;
   final SlidableController slidableController = SlidableController();
 
-  _ListScreenState(this.uid);
+  _ListScreenState(this.uid, this.kopoModel);
 
   @override
   void initState() {
+    super.initState();
     favorites = false;
     korean = true;
     bunsik = true;
@@ -216,8 +221,30 @@ class _ListScreenState extends State<ListScreen> {
     );
   }
 
+  void printWrapped(String text) {
+    final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
+    pattern.allMatches(text).forEach((match) => print(match.group(0)));
+  }
+
+  List<Restaurant> parseRestaurants(String responseBody) {
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+
+    return parsed.map<Restaurant>((json) => Restaurant.fromJson(json)).toList();
+  }
+
+  Future<http.Response> fetchPost(String place) async {
+    var url = Uri.parse(
+        'https://dapi.kakao.com/v2/local/search/keyword.json?query=' + place);
+    var response = await http.post(url,
+        headers: {'Authorization': 'KakaoAK 2d1e034b85ed5af50b57147b95bbd43e'});
+    print('Response status: ${response.statusCode}');
+    printWrapped('Response body: ${response.body}');
+    restaurants = parseRestaurants(response.body);
+  }
+
   @override
   Widget build(BuildContext context) {
+    fetchPost(kopoModel.address + '한식');
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -262,10 +289,10 @@ class _ListScreenState extends State<ListScreen> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                final item = items[index];
+                final item = restaurants[index];
                 final isfav = isFavorite[index];
                 return Slidable.builder(
-                  key: Key(item),
+                  key: Key(item.id),
                   controller: slidableController,
                   actionPane: SlidableDrawerActionPane(),
                   actionExtentRatio: 0.25,
@@ -274,11 +301,11 @@ class _ListScreenState extends State<ListScreen> {
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.indigoAccent,
-                        child: Text('$item'),
+                        child: Text('$item.place_name'),
                         foregroundColor: Colors.white,
                       ),
-                      title: Text('Tile $item'),
-                      subtitle: Text('SlidableDrawerDelegate'),
+                      title: Text('$item.place_name'),
+                      subtitle: Text('$item.category_name'),
                     ),
                   ),
                   actionDelegate: SlideActionBuilderDelegate(
@@ -320,18 +347,19 @@ class _ListScreenState extends State<ListScreen> {
                     },
                   ),
                   dismissal: SlidableDismissal(
-                    child: SlidableDrawerDismissal(key: Key(item)),
+                    child: SlidableDrawerDismissal(key: Key(item.id)),
                     onDismissed: (actionType) {
                       setState(() {
-                        String deletedItem = items.removeAt(index);
+                        Restaurant deletedItem = restaurants.removeAt(index);
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text("\"${deletedItem}\" 삭제됨"),
+                            content: Text("\"${deletedItem.place_name}\" 삭제됨"),
                             action: SnackBarAction(
                                 label: "되돌리기",
                                 onPressed: () => setState(
-                                      () => items.insert(index, deletedItem),
+                                      () => restaurants.insert(
+                                          index, deletedItem),
                                     ) // this is what you needed
                                 ),
                           ),
@@ -353,7 +381,7 @@ class _ListScreenState extends State<ListScreen> {
                   onDismissed: (direction) {
                     // Remove the item from the data source.
                     setState(() {
-                      items.removeAt(index);
+                      restaurants.removeAt(index);
                     });
 
                     // Then show a snackbar.
@@ -365,7 +393,7 @@ class _ListScreenState extends State<ListScreen> {
                   child: ListTile(title: Text('$item')),
                 );*/
               },
-              childCount: items.length,
+              childCount: restaurants.length,
             ),
           ),
         ],
