@@ -28,7 +28,14 @@ class _ListScreenState extends State<ListScreen> {
   bool korean, bunsik, japanese, western, chinese;
   //final items = List<String>.generate(10, (i) => 'Restaurant ${i + 1}');
   List<Restaurant> restaurants = [];
-  final isFavorite = List<bool>.generate(15, (i) => false);
+  List<Restaurant> koreanRestaurants = [];
+  List<Restaurant> bunsikRestaurants = [];
+  List<Restaurant> japaneseRestaurants = [];
+  List<Restaurant> westernRestaurants = [];
+  List<Restaurant> chineseRestaurants = [];
+  List<Restaurant> favoriteRestaurants = [];
+  List<Restaurant> visibleRestaurants = [];
+  // final isFavorite = List<bool>.generate(15, (i) => false);
   bool _pinned = true;
   bool _snap = false;
   bool _floating = true;
@@ -85,6 +92,13 @@ class _ListScreenState extends State<ListScreen> {
           onChanged: (value) {
             setState(() {
               korean = !korean;
+              if (korean)
+                restaurants += koreanRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(koreanRestaurants.toSet())
+                    .toList();
             });
           },
           checkColor: Colors.white,
@@ -94,6 +108,13 @@ class _ListScreenState extends State<ListScreen> {
           onTap: () {
             setState(() {
               korean = !korean;
+              if (korean)
+                restaurants += koreanRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(koreanRestaurants.toSet())
+                    .toList();
             });
           },
           child: Text(
@@ -114,6 +135,13 @@ class _ListScreenState extends State<ListScreen> {
           onChanged: (value) {
             setState(() {
               bunsik = !bunsik;
+              if (bunsik)
+                restaurants += bunsikRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(bunsikRestaurants.toSet())
+                    .toList();
             });
           },
           checkColor: Colors.white,
@@ -123,6 +151,13 @@ class _ListScreenState extends State<ListScreen> {
           onTap: () {
             setState(() {
               bunsik = !bunsik;
+              if (bunsik)
+                restaurants += bunsikRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(bunsikRestaurants.toSet())
+                    .toList();
             });
           },
           child: Text(
@@ -143,6 +178,13 @@ class _ListScreenState extends State<ListScreen> {
           onChanged: (value) {
             setState(() {
               japanese = !japanese;
+              if (japanese)
+                restaurants += japaneseRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(japaneseRestaurants.toSet())
+                    .toList();
             });
           },
           checkColor: Colors.white,
@@ -152,6 +194,13 @@ class _ListScreenState extends State<ListScreen> {
           onTap: () {
             setState(() {
               japanese = !japanese;
+              if (japanese)
+                restaurants += japaneseRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(japaneseRestaurants.toSet())
+                    .toList();
             });
           },
           child: Text(
@@ -172,6 +221,13 @@ class _ListScreenState extends State<ListScreen> {
           onChanged: (value) {
             setState(() {
               western = !western;
+              if (western)
+                restaurants += westernRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(westernRestaurants.toSet())
+                    .toList();
             });
           },
           checkColor: Colors.white,
@@ -181,6 +237,13 @@ class _ListScreenState extends State<ListScreen> {
           onTap: () {
             setState(() {
               western = !western;
+              if (western)
+                restaurants += westernRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(westernRestaurants.toSet())
+                    .toList();
             });
           },
           child: Text(
@@ -201,6 +264,13 @@ class _ListScreenState extends State<ListScreen> {
           onChanged: (value) {
             setState(() {
               chinese = !chinese;
+              if (chinese)
+                restaurants += chineseRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(chineseRestaurants.toSet())
+                    .toList();
             });
           },
           checkColor: Colors.white,
@@ -210,6 +280,13 @@ class _ListScreenState extends State<ListScreen> {
           onTap: () {
             setState(() {
               chinese = !chinese;
+              if (chinese)
+                restaurants += chineseRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(chineseRestaurants.toSet())
+                    .toList();
             });
           },
           child: Text(
@@ -240,8 +317,28 @@ class _ListScreenState extends State<ListScreen> {
         headers: {'Authorization': 'KakaoAK 2d1e034b85ed5af50b57147b95bbd43e'});
     //print('Response status: ${response.statusCode}');
     //printWrapped('Response body: ${response.body}');
+    String genre = place.substring(place.length - 2);
     setState(() {
-      restaurants += parseRestaurants(response.body);
+      if (genre == '한식' && koreanRestaurants.isEmpty) {
+        koreanRestaurants += parseRestaurants(response.body);
+        if (korean) restaurants += koreanRestaurants;
+      }
+      if (genre == '분식' && bunsikRestaurants.isEmpty) {
+        bunsikRestaurants += parseRestaurants(response.body);
+        if (bunsik) restaurants += bunsikRestaurants;
+      }
+      if (genre == '일식' && japaneseRestaurants.isEmpty) {
+        japaneseRestaurants += parseRestaurants(response.body);
+        if (japanese) restaurants += japaneseRestaurants;
+      }
+      if (genre == '양식' && westernRestaurants.isEmpty) {
+        westernRestaurants += parseRestaurants(response.body);
+        if (western) restaurants += westernRestaurants;
+      }
+      if (genre == '중식' && chineseRestaurants.isEmpty) {
+        chineseRestaurants += parseRestaurants(response.body);
+        if (chinese) restaurants += chineseRestaurants;
+      }
     });
   }
 
@@ -252,6 +349,13 @@ class _ListScreenState extends State<ListScreen> {
     if (japanese) fetchPost(kopoModel.address + '일식');
     if (western) fetchPost(kopoModel.address + '양식');
     if (chinese) fetchPost(kopoModel.address + '중식');
+    if (favorites)
+      visibleRestaurants = restaurants
+          .toSet()
+          .intersection(favoriteRestaurants.toSet())
+          .toList();
+    else
+      visibleRestaurants = restaurants;
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -296,8 +400,8 @@ class _ListScreenState extends State<ListScreen> {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
-                final item = restaurants[index];
-                final isfav = isFavorite[index];
+                final item = visibleRestaurants[index];
+                final isfav = favoriteRestaurants.contains(restaurants[index]);
                 return Slidable.builder(
                   key: Key(item.id),
                   controller: slidableController,
@@ -325,9 +429,11 @@ class _ListScreenState extends State<ListScreen> {
                           icon: isfav ? Icons.star : Icons.star_border,
                           onTap: () => {
                             setState(() {
-                              isFavorite[index] = !isFavorite[index];
+                              if (isfav)
+                                favoriteRestaurants.remove(restaurants[index]);
+                              else
+                                favoriteRestaurants.add(restaurants[index]);
                             }),
-                            print('찜하기'),
                           },
                         );
                       else
@@ -400,7 +506,7 @@ class _ListScreenState extends State<ListScreen> {
                   child: ListTile(title: Text('$item')),
                 );*/
               },
-              childCount: restaurants.length,
+              childCount: visibleRestaurants.length,
             ),
           ),
         ],
