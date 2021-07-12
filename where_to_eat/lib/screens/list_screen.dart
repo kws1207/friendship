@@ -27,7 +27,7 @@ class _ListScreenState extends State<ListScreen> {
   bool favorites;
   bool korean, bunsik, japanese, western, chinese;
   //final items = List<String>.generate(10, (i) => 'Restaurant ${i + 1}');
-  List<Restaurant> restaurants;
+  List<Restaurant> restaurants = [];
   final isFavorite = List<bool>.generate(10, (i) => false);
   bool _pinned = true;
   bool _snap = false;
