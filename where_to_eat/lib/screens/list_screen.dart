@@ -5,6 +5,7 @@ import 'package:where_to_eat/utilities/constants.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:where_to_eat/domain/classes.dart';
 import 'package:http/http.dart' as http;
+import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
 
 class ListScreen extends StatefulWidget {
@@ -24,6 +25,8 @@ class ListScreen extends StatefulWidget {
 class _ListScreenState extends State<ListScreen> {
   final String uid;
   final KopoModel kopoModel;
+  String dropdownValue = '없음';
+  Position currentLocation;
   bool favorites;
   bool korean, bunsik, japanese, western, chinese;
   //final items = List<String>.generate(10, (i) => 'Restaurant ${i + 1}');
@@ -298,6 +301,34 @@ class _ListScreenState extends State<ListScreen> {
     );
   }
 
+  Widget _buildDropdownBtn() {
+    return DropdownButton<String>(
+      value: dropdownValue,
+      icon: const Icon(Icons.arrow_downward),
+      iconSize: 24,
+      elevation: 16,
+      style: kBlackLabelStyle,
+      underline: Container(
+        height: 2,
+        color: Colors.orangeAccent,
+      ),
+      onChanged: (String newValue) {
+        setState(() {
+          dropdownValue = newValue;
+        });
+      },
+      items: <String>[
+        '없음',
+        '가까운순',
+      ].map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+
   void printWrapped(String text) {
     final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
     pattern.allMatches(text).forEach((match) => print(match.group(0)));
@@ -342,6 +373,15 @@ class _ListScreenState extends State<ListScreen> {
     });
   }
 
+  void getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    setState(() {
+      currentLocation = position;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (korean) fetchPost(kopoModel.address + '한식');
@@ -356,6 +396,7 @@ class _ListScreenState extends State<ListScreen> {
           .toList();
     else
       visibleRestaurants = restaurants;
+    if (dropdownValue == '가까운순') {}
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -378,6 +419,8 @@ class _ListScreenState extends State<ListScreen> {
                     Row(
                       children: <Widget>[
                         _favoritesCheckBox(),
+                        SizedBox(width: 20),
+                        _buildDropdownBtn(),
                       ],
                     ),
                     SingleChildScrollView(
