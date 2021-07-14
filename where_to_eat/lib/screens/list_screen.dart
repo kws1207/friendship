@@ -6,6 +6,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:where_to_eat/domain/classes.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
+import 'dart:math';
 import 'dart:convert';
 
 class ListScreen extends StatefulWidget {
@@ -315,6 +316,9 @@ class _ListScreenState extends State<ListScreen> {
       onChanged: (String newValue) {
         setState(() {
           dropdownValue = newValue;
+          if (dropdownValue == '가까운순') {
+            restaurants.sort((a, b) => a.distance.compareTo(b.distance));
+          }
         });
       },
       items: <String>[
@@ -396,7 +400,6 @@ class _ListScreenState extends State<ListScreen> {
           .toList();
     else
       visibleRestaurants = restaurants;
-    if (dropdownValue == '가까운순') {}
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -445,6 +448,9 @@ class _ListScreenState extends State<ListScreen> {
               (BuildContext context, int index) {
                 final item = visibleRestaurants[index];
                 final isfav = favoriteRestaurants.contains(restaurants[index]);
+                item.distance = sqrt(
+                    pow(currentLocation.latitude - int.parse(item.x), 2) *
+                        pow(currentLocation.longitude - int.parse(item.y), 2));
                 return Slidable.builder(
                   key: Key(item.id),
                   controller: slidableController,
