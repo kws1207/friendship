@@ -6,7 +6,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:where_to_eat/domain/classes.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
-import 'dart:math';
 import 'dart:convert';
 
 class ListScreen extends StatefulWidget {
@@ -26,7 +25,7 @@ class ListScreen extends StatefulWidget {
 class _ListScreenState extends State<ListScreen> {
   final String uid;
   final KopoModel kopoModel;
-  String dropdownValue = '없음';
+  String dropdownValue = '기본순';
   Position currentLocation;
   bool favorites;
   bool korean, bunsik, japanese, western, chinese;
@@ -50,6 +49,7 @@ class _ListScreenState extends State<ListScreen> {
   @override
   void initState() {
     super.initState();
+    getCurrentLocation();
     favorites = false;
     korean = true;
     bunsik = false;
@@ -316,13 +316,17 @@ class _ListScreenState extends State<ListScreen> {
       onChanged: (String newValue) {
         setState(() {
           dropdownValue = newValue;
-          if (dropdownValue == '가까운순') {
-            restaurants.sort((a, b) => a.distance.compareTo(b.distance));
-          }
+          if (favorites)
+            visibleRestaurants = List.of(restaurants)
+                .toSet()
+                .intersection(favoriteRestaurants.toSet())
+                .toList();
+          else
+            visibleRestaurants = List.of(restaurants);
         });
       },
       items: <String>[
-        '없음',
+        '기본순',
         '가까운순',
       ].map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
@@ -342,7 +346,9 @@ class _ListScreenState extends State<ListScreen> {
     final parsed =
         json.decode(responseBody)["documents"].cast<Map<String, dynamic>>();
 
-    return parsed.map<Restaurant>((json) => Restaurant.fromJson(json)).toList();
+    return parsed
+        .map<Restaurant>((json) => Restaurant.fromJson(json, currentLocation))
+        .toList();
   }
 
   Future<http.Response> fetchPost(String place) async {
@@ -393,13 +399,19 @@ class _ListScreenState extends State<ListScreen> {
     if (japanese) fetchPost(kopoModel.address + '일식');
     if (western) fetchPost(kopoModel.address + '양식');
     if (chinese) fetchPost(kopoModel.address + '중식');
+
     if (favorites)
-      visibleRestaurants = restaurants
+      visibleRestaurants = List.of(restaurants)
           .toSet()
           .intersection(favoriteRestaurants.toSet())
           .toList();
     else
-      visibleRestaurants = restaurants;
+      visibleRestaurants = List.of(restaurants);
+
+    if (dropdownValue == '가까운순') {
+      visibleRestaurants.sort((a, b) => a.distance.compareTo(b.distance));
+    }
+
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -448,9 +460,6 @@ class _ListScreenState extends State<ListScreen> {
               (BuildContext context, int index) {
                 final item = visibleRestaurants[index];
                 final isfav = favoriteRestaurants.contains(restaurants[index]);
-                item.distance = sqrt(
-                    pow(currentLocation.latitude - int.parse(item.x), 2) *
-                        pow(currentLocation.longitude - int.parse(item.y), 2));
                 return Slidable.builder(
                   key: Key(item.id),
                   controller: slidableController,
