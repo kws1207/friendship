@@ -34,34 +34,6 @@ class _SelectScreenState extends State<SelectScreen> {
     super.initState();
   }
 
-  Widget championHistory(BuildContext context) {
-    return StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('favorites')
-            .doc(uid)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final DocumentSnapshot document = snapshot.data;
-            return ListView(
-              children: List.from(document['array'])
-                  .map(
-                    (name) => Card(
-                      child: ListTile(
-                        title: Text(name),
-                      ),
-                    ),
-                  )
-                  .toList(),
-            );
-          } else {
-            return Card(
-              child: Text("Loading..."),
-            );
-          }
-        });
-  }
-
   Widget _searchLocationTF() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,26 +103,6 @@ class _SelectScreenState extends State<SelectScreen> {
           ],
         );
       },
-    );
-  }
-
-  void _pushSaved() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        // NEW lines from here...
-        builder: (BuildContext context) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                '명예의 전당',
-                style: kWhiteLabelStyle,
-              ),
-              backgroundColor: Colors.orange[400],
-            ),
-            body: championHistory(context),
-          );
-        }, // ...to here.
-      ),
     );
   }
 
@@ -238,17 +190,6 @@ class _SelectScreenState extends State<SelectScreen> {
         title: Text(
           '어디갈랭',
           style: kWhiteLabelStyle,
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.list),
-            onPressed: () => {
-              _pushSaved(),
-            },
-          ),
-        ],
-        actionsIconTheme: IconThemeData(
-          color: Colors.white,
         ),
       ),
       body: Stack(

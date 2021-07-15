@@ -6,7 +6,7 @@
     </uses-permission>
     
     <meta-data
-      android:name="com.kakao.sdk.AppKey" android:value="8zraieNcAN88cpyi/+FY8aHYzM0="
+      android:name="com.kakao.sdk.AppKey" android:value="b3fb88ef9a08b3dc2d98d65af61c4581"
       />
    <application
         android:label="where_to_eat">

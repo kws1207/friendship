@@ -1,4 +1,4 @@
-import 'package:geolocator/geolocator.dart';
+import 'package:quiver/core.dart';
 import 'dart:math';
 
 class Restaurant {
@@ -18,8 +18,28 @@ class Restaurant {
       this.y,
       this.distance});
 
+  @override
+  int get hashCode => hash2(place_name.hashCode, id.hashCode);
+
+  @override
+  bool operator ==(other) {
+    return other.id == id;
+  }
+
+  factory Restaurant.fromJsonInit(Map<String, dynamic> json) {
+    return Restaurant(
+      place_name: json['place_name'] as String,
+      id: json['id'] as String,
+      category_name: json['category_name'] as String,
+      phone: json['phone'] as String,
+      x: json['x'] as String,
+      y: json['y'] as String,
+      distance: 0,
+    );
+  }
+
   factory Restaurant.fromJson(
-      Map<String, dynamic> json, Position currentLocation) {
+      Map<String, dynamic> json, Restaurant kopoLocation) {
     String _x = json['x'] as String;
     String _y = json['y'] as String;
     return Restaurant(
@@ -29,8 +49,8 @@ class Restaurant {
       phone: json['phone'] as String,
       x: _x,
       y: _y,
-      distance: pow(currentLocation.latitude - num.parse(_x), 2) *
-          pow(currentLocation.longitude - num.parse(_y), 2),
+      distance: pow(num.parse(kopoLocation.x) - num.parse(_x), 2) +
+          pow(num.parse(kopoLocation.y) - num.parse(_y), 2),
     );
   }
 }

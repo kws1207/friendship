@@ -65,15 +65,6 @@ class _SignInScreenState extends State<SignInScreen> {
       _userUID = user.uid;
     }
 
-    if (AdditionalUserInfo().isNewUser) {
-      _firestore.collection('favorites').doc(_userUID).set(
-        {
-          'array': FieldValue.arrayUnion(["--- 찜한 식당 목록 ---"]),
-        },
-        SetOptions(merge: true),
-      );
-    }
-
     print("google login finish");
     return user;
   }
@@ -240,13 +231,6 @@ class _SignInScreenState extends State<SignInScreen> {
             (_) {
               user = AuthService().userInfo;
               _userUID = user.uid;
-              _firestore.collection('favorites').doc(_userUID).set(
-                {
-                  'array': FieldValue.arrayUnion(["--- 찜한 식당 목록 ---"]),
-                },
-                SetOptions(merge: true),
-              );
-
               navigationPage();
             },
             onError: (error) => showNativeDialog(error, context),

@@ -7,6 +7,8 @@ import 'package:where_to_eat/domain/classes.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ListScreen extends StatefulWidget {
   final String uid;
@@ -26,6 +28,7 @@ class _ListScreenState extends State<ListScreen> {
   final String uid;
   final KopoModel kopoModel;
   String dropdownValue = '기본순';
+  Restaurant kopoLocation;
   Position currentLocation;
   bool favorites;
   bool korean, bunsik, japanese, western, chinese;
@@ -44,12 +47,17 @@ class _ListScreenState extends State<ListScreen> {
   bool _floating = true;
   final SlidableController slidableController = SlidableController();
 
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
+
   _ListScreenState(this.uid, this.kopoModel);
 
   @override
   void initState() {
     super.initState();
-    getCurrentLocation();
+    //getCurrentLocation();
+    getKopoLocation();
+    loadFavorites();
     favorites = false;
     korean = true;
     bunsik = false;
@@ -347,19 +355,20 @@ class _ListScreenState extends State<ListScreen> {
         json.decode(responseBody)["documents"].cast<Map<String, dynamic>>();
 
     return parsed
-        .map<Restaurant>((json) => Restaurant.fromJson(json, currentLocation))
+        .map<Restaurant>((json) => Restaurant.fromJson(json, kopoLocation))
         .toList();
   }
 
   Future<http.Response> fetchPost(String place) async {
+    print('fetchpost: ' + place);
     var url = Uri.parse(
         'https://dapi.kakao.com/v2/local/search/keyword.json?query=' + place);
     var response = await http.post(url,
-        headers: {'Authorization': 'KakaoAK 2d1e034b85ed5af50b57147b95bbd43e'});
+        headers: {'Authorization': 'KakaoAK f7fe1cb54eecf69fc022ce8035f1e369'});
     //print('Response status: ${response.statusCode}');
     //printWrapped('Response body: ${response.body}');
-    String genre = place.substring(place.length - 2);
     setState(() {
+      String genre = place.substring(place.length - 2);
       if (genre == '한식' && koreanRestaurants.isEmpty) {
         koreanRestaurants += parseRestaurants(response.body);
         if (korean) restaurants += koreanRestaurants;
@@ -383,6 +392,24 @@ class _ListScreenState extends State<ListScreen> {
     });
   }
 
+  Future<http.Response> getKopoLocation() async {
+    var url = Uri.parse(
+        'https://dapi.kakao.com/v2/local/search/keyword.json?query=' +
+            kopoModel.address);
+    var response = await http.post(url,
+        headers: {'Authorization': 'KakaoAK f7fe1cb54eecf69fc022ce8035f1e369'});
+    final parsed =
+        json.decode(response.body)["documents"].cast<Map<String, dynamic>>();
+
+    List<Restaurant> list = parsed
+        .map<Restaurant>((json) => Restaurant.fromJsonInit(json))
+        .toList();
+
+    setState(() {
+      kopoLocation = list.first;
+    });
+  }
+
   void getCurrentLocation() async {
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
@@ -390,16 +417,76 @@ class _ListScreenState extends State<ListScreen> {
     setState(() {
       currentLocation = position;
     });
+    print(currentLocation.latitude);
+    print(currentLocation.longitude);
+  }
+
+  void saveFavorites() async {
+    print(uid);
+    favoriteRestaurants.forEach(
+      (restaurant) {
+        _firestore.collection('favorites').doc(uid).set(
+          {
+            'array': FieldValue.arrayUnion([
+              {
+                'place_name': restaurant.place_name,
+                'category_name': restaurant.category_name,
+                'x': restaurant.x,
+                'y': restaurant.y,
+                'id': restaurant.id,
+                'phone': restaurant.phone,
+                'distance': restaurant.distance,
+              }
+            ])
+          },
+          SetOptions(merge: true),
+        );
+      },
+    );
+  }
+
+  void deleteFavorites() async {
+    FirebaseFirestore.instance.collection('favorites').doc(uid).delete();
+  }
+
+  void loadFavorites() async {
+    FirebaseFirestore.instance
+        .collection('favorites')
+        .doc(uid)
+        .get()
+        .then((DocumentSnapshot ds) {
+      List<dynamic> _list = ds['array'];
+      _list.forEach((e) {
+        if (favoriteRestaurants.any((f) => (e['id'] == f.id))) {
+          print('already exists');
+        } else {
+          favoriteRestaurants.add(Restaurant(
+            place_name: e['place_name'],
+            category_name: e['category_name'],
+            x: e['x'],
+            y: e['y'],
+            id: e['id'],
+            phone: e['phone'],
+            distance: e['distance'],
+          ));
+        }
+      });
+      //print(e['place_name']);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (korean) fetchPost(kopoModel.address + '한식');
-    if (bunsik) fetchPost(kopoModel.address + '분식');
-    if (japanese) fetchPost(kopoModel.address + '일식');
-    if (western) fetchPost(kopoModel.address + '양식');
-    if (chinese) fetchPost(kopoModel.address + '중식');
-
+    if (korean && koreanRestaurants.isEmpty)
+      fetchPost(kopoModel.address + '한식');
+    if (bunsik && bunsikRestaurants.isEmpty)
+      fetchPost(kopoModel.address + '분식');
+    if (japanese && japaneseRestaurants.isEmpty)
+      fetchPost(kopoModel.address + '일식');
+    if (western && westernRestaurants.isEmpty)
+      fetchPost(kopoModel.address + '양식');
+    if (chinese && chineseRestaurants.isEmpty)
+      fetchPost(kopoModel.address + '중식');
     if (favorites)
       visibleRestaurants = List.of(restaurants)
           .toSet()
@@ -407,10 +494,12 @@ class _ListScreenState extends State<ListScreen> {
           .toList();
     else
       visibleRestaurants = List.of(restaurants);
-
     if (dropdownValue == '가까운순') {
       visibleRestaurants.sort((a, b) => a.distance.compareTo(b.distance));
     }
+    //print(favoriteRestaurants.map((e) => e.place_name));
+    //print(restaurants.map((e) => e.place_name));
+    //print(visibleRestaurants.map((e) => e.place_name));
 
     return Scaffold(
       body: CustomScrollView(
@@ -459,7 +548,7 @@ class _ListScreenState extends State<ListScreen> {
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 final item = visibleRestaurants[index];
-                final isfav = favoriteRestaurants.contains(restaurants[index]);
+                final isfav = favoriteRestaurants.any((e) => (e.id == item.id));
                 return Slidable.builder(
                   key: Key(item.id),
                   controller: slidableController,
@@ -487,10 +576,14 @@ class _ListScreenState extends State<ListScreen> {
                           icon: isfav ? Icons.star : Icons.star_border,
                           onTap: () => {
                             setState(() {
-                              if (isfav)
+                              if (isfav) {
                                 favoriteRestaurants.remove(restaurants[index]);
-                              else
+                                deleteFavorites();
+                                saveFavorites();
+                              } else {
                                 favoriteRestaurants.add(restaurants[index]);
+                                saveFavorites();
+                              }
                             }),
                           },
                         );

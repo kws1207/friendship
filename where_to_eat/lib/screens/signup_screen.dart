@@ -189,13 +189,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   _userUID,
                 );
 
-                _firestore.collection('favorites').doc(_userUID).set(
-                  {
-                    'array': FieldValue.arrayUnion(["--- 찜한 식당 목록 ---"]),
-                  },
-                  SetOptions(merge: true),
-                );
-
                 navigationPage();
               },
               onError: (error) {
