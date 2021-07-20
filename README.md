@@ -5,7 +5,7 @@
 두번째 앱 wheretoeat: 식당 고르기 앱
 
 
-# Mobile application as a hobby, Team friendship (Kim WooSung and Bae JeongIn).
+# Mobile application as a hobby, Team friendship
 
 First App Departure: Menu Ideal World Cup
 
