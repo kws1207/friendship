@@ -9,6 +9,8 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:where_to_eat/screens/roulette_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ListScreen extends StatefulWidget {
   final String uid;
@@ -30,8 +32,8 @@ class _ListScreenState extends State<ListScreen> {
   String dropdownValue = '기본순';
   Restaurant kopoLocation;
   Position currentLocation;
-  bool favorites;
-  bool korean, bunsik, japanese, western, chinese;
+  bool favorites, initialized;
+  bool korean, bunsik, japanese, western, chinese, asian, fastfood, cafe;
   //final items = List<String>.generate(10, (i) => 'Restaurant ${i + 1}');
   List<Restaurant> restaurants = [];
   List<Restaurant> koreanRestaurants = [];
@@ -39,6 +41,9 @@ class _ListScreenState extends State<ListScreen> {
   List<Restaurant> japaneseRestaurants = [];
   List<Restaurant> westernRestaurants = [];
   List<Restaurant> chineseRestaurants = [];
+  List<Restaurant> asianRestaurants = [];
+  List<Restaurant> fastfoodRestaurants = [];
+  List<Restaurant> cafeRestaurants = [];
   List<Restaurant> favoriteRestaurants = [];
   List<Restaurant> visibleRestaurants = [];
   // final isFavorite = List<bool>.generate(15, (i) => false);
@@ -56,14 +61,54 @@ class _ListScreenState extends State<ListScreen> {
   void initState() {
     super.initState();
     //getCurrentLocation();
-    getKopoLocation();
-    loadFavorites();
+    initialized = false;
     favorites = false;
     korean = true;
     bunsik = false;
     japanese = false;
     western = false;
     chinese = false;
+    asian = false;
+    fastfood = false;
+    cafe = false;
+    asyncMethod();
+  }
+
+  void asyncMethod() async {
+    kopoLocation = null;
+    await getKopoLocation();
+    await loadFavorites();
+    await fetchPost(kopoModel.address + ' 한식');
+    await fetchPost(kopoModel.address + ' 분식');
+    await fetchPost(kopoModel.address + ' 일식');
+    await fetchPost(kopoModel.address + ' 양식');
+    await fetchPost(kopoModel.address + ' 중식');
+    await fetchPost(kopoModel.address + ' 아시아음식');
+    await fetchPost(kopoModel.address + ' 패스트푸드');
+    await fetchPost(kopoModel.address + ' 카페');
+    setState(() {});
+  }
+
+  void pushRoulettePage() {
+    if (visibleRestaurants.length < 6) {
+      print("Not enough items!");
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                RouletteScreen(rouletteList: visibleRestaurants.sublist(0, 6))),
+      );
+    }
+  }
+
+  void _launchURL(String url) async {
+    //print(url);
+    if (await canLaunch(Uri.encodeFull(url))) {
+      await launch(Uri.encodeFull(url));
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Widget _favoritesCheckBox() {
@@ -173,7 +218,7 @@ class _ListScreenState extends State<ListScreen> {
             });
           },
           child: Text(
-            '분식 / 패스트푸드',
+            '분식',
             style: kBlackLabelStyle,
           ),
         )
@@ -259,7 +304,7 @@ class _ListScreenState extends State<ListScreen> {
             });
           },
           child: Text(
-            '아시안 / 양식',
+            '양식',
             style: kBlackLabelStyle,
           ),
         )
@@ -302,7 +347,136 @@ class _ListScreenState extends State<ListScreen> {
             });
           },
           child: Text(
-            '중국음식 (마라요리, 훠궈 등 포함)',
+            '중식',
+            style: kBlackLabelStyle,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _asianCheckBox() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Checkbox(
+          value: asian,
+          onChanged: (value) {
+            setState(() {
+              asian = !asian;
+              if (asian)
+                restaurants += asianRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(asianRestaurants.toSet())
+                    .toList();
+            });
+          },
+          checkColor: Colors.white,
+          activeColor: Colors.orange,
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              asian = !asian;
+              if (asian)
+                restaurants += asianRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(asianRestaurants.toSet())
+                    .toList();
+            });
+          },
+          child: Text(
+            '아시아음식',
+            style: kBlackLabelStyle,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _fastfoodCheckBox() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Checkbox(
+          value: fastfood,
+          onChanged: (value) {
+            setState(() {
+              fastfood = !fastfood;
+              if (fastfood)
+                restaurants += fastfoodRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(fastfoodRestaurants.toSet())
+                    .toList();
+            });
+          },
+          checkColor: Colors.white,
+          activeColor: Colors.orange,
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              fastfood = !fastfood;
+              if (fastfood)
+                restaurants += fastfoodRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(fastfoodRestaurants.toSet())
+                    .toList();
+            });
+          },
+          child: Text(
+            '패스트푸드',
+            style: kBlackLabelStyle,
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget _cafeCheckBox() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Checkbox(
+          value: cafe,
+          onChanged: (value) {
+            setState(() {
+              cafe = !cafe;
+              if (cafe)
+                restaurants += cafeRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(cafeRestaurants.toSet())
+                    .toList();
+            });
+          },
+          checkColor: Colors.white,
+          activeColor: Colors.orange,
+        ),
+        InkWell(
+          onTap: () {
+            setState(() {
+              cafe = !cafe;
+              if (cafe)
+                restaurants += cafeRestaurants;
+              else
+                restaurants = restaurants
+                    .toSet()
+                    .difference(cafeRestaurants.toSet())
+                    .toList();
+            });
+          },
+          child: Text(
+            '카페',
             style: kBlackLabelStyle,
           ),
         )
@@ -329,8 +503,9 @@ class _ListScreenState extends State<ListScreen> {
                 .toSet()
                 .intersection(favoriteRestaurants.toSet())
                 .toList();
-          else
+          else {
             visibleRestaurants = List.of(restaurants);
+          }
         });
       },
       items: <String>[
@@ -367,29 +542,39 @@ class _ListScreenState extends State<ListScreen> {
         headers: {'Authorization': 'KakaoAK f7fe1cb54eecf69fc022ce8035f1e369'});
     //print('Response status: ${response.statusCode}');
     //printWrapped('Response body: ${response.body}');
-    setState(() {
-      String genre = place.substring(place.length - 2);
-      if (genre == '한식' && koreanRestaurants.isEmpty) {
-        koreanRestaurants += parseRestaurants(response.body);
-        if (korean) restaurants += koreanRestaurants;
-      }
-      if (genre == '분식' && bunsikRestaurants.isEmpty) {
-        bunsikRestaurants += parseRestaurants(response.body);
-        if (bunsik) restaurants += bunsikRestaurants;
-      }
-      if (genre == '일식' && japaneseRestaurants.isEmpty) {
-        japaneseRestaurants += parseRestaurants(response.body);
-        if (japanese) restaurants += japaneseRestaurants;
-      }
-      if (genre == '양식' && westernRestaurants.isEmpty) {
-        westernRestaurants += parseRestaurants(response.body);
-        if (western) restaurants += westernRestaurants;
-      }
-      if (genre == '중식' && chineseRestaurants.isEmpty) {
-        chineseRestaurants += parseRestaurants(response.body);
-        if (chinese) restaurants += chineseRestaurants;
-      }
-    });
+    String genre = place.substring(place.length - 2);
+    if (genre == '한식' && koreanRestaurants.isEmpty) {
+      koreanRestaurants += parseRestaurants(response.body);
+      if (korean) restaurants += koreanRestaurants;
+    }
+    if (genre == '분식' && bunsikRestaurants.isEmpty) {
+      bunsikRestaurants += parseRestaurants(response.body);
+      if (bunsik) restaurants += bunsikRestaurants;
+    }
+    if (genre == '일식' && japaneseRestaurants.isEmpty) {
+      japaneseRestaurants += parseRestaurants(response.body);
+      if (japanese) restaurants += japaneseRestaurants;
+    }
+    if (genre == '양식' && westernRestaurants.isEmpty) {
+      westernRestaurants += parseRestaurants(response.body);
+      if (western) restaurants += westernRestaurants;
+    }
+    if (genre == '중식' && chineseRestaurants.isEmpty) {
+      chineseRestaurants += parseRestaurants(response.body);
+      if (chinese) restaurants += chineseRestaurants;
+    }
+    if (genre == '음식' && asianRestaurants.isEmpty) {
+      asianRestaurants += parseRestaurants(response.body);
+      if (asian) restaurants += asianRestaurants;
+    }
+    if (genre == '푸드' && fastfoodRestaurants.isEmpty) {
+      fastfoodRestaurants += parseRestaurants(response.body);
+      if (fastfood) restaurants += fastfoodRestaurants;
+    }
+    if (genre == '카페' && cafeRestaurants.isEmpty) {
+      cafeRestaurants += parseRestaurants(response.body);
+      if (cafe) restaurants += cafeRestaurants;
+    }
   }
 
   Future<http.Response> getKopoLocation() async {
@@ -401,6 +586,7 @@ class _ListScreenState extends State<ListScreen> {
     final parsed =
         json.decode(response.body)["documents"].cast<Map<String, dynamic>>();
 
+    //print(response.body);
     List<Restaurant> list = parsed
         .map<Restaurant>((json) => Restaurant.fromJsonInit(json))
         .toList();
@@ -424,8 +610,8 @@ class _ListScreenState extends State<ListScreen> {
   void saveFavorites() async {
     print(uid);
     favoriteRestaurants.forEach(
-      (restaurant) {
-        _firestore.collection('favorites').doc(uid).set(
+      (restaurant) async {
+        await _firestore.collection('favorites').doc(uid).set(
           {
             'array': FieldValue.arrayUnion([
               {
@@ -446,11 +632,17 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   void deleteFavorites() async {
-    FirebaseFirestore.instance.collection('favorites').doc(uid).delete();
+    await FirebaseFirestore.instance.collection('favorites').doc(uid).delete();
+  }
+
+  void refreshFavorites() async {
+    print(favoriteRestaurants);
+    deleteFavorites();
+    saveFavorites();
   }
 
   void loadFavorites() async {
-    FirebaseFirestore.instance
+    await FirebaseFirestore.instance
         .collection('favorites')
         .doc(uid)
         .get()
@@ -470,23 +662,41 @@ class _ListScreenState extends State<ListScreen> {
             distance: e['distance'],
           ));
         }
+        initialized = true;
       });
       //print(e['place_name']);
-    });
+    }).onError((error, stackTrace) => null);
+  }
+
+  Widget _itemIconBuilder(Restaurant item) {
+    if (koreanRestaurants.contains(item)) return Icon(Icons.rice_bowl);
+    if (bunsikRestaurants.contains(item)) return Icon(Icons.restaurant);
+    if (japaneseRestaurants.contains(item)) return Icon(Icons.ramen_dining);
+    if (westernRestaurants.contains(item)) return Icon(Icons.dinner_dining);
+    if (chineseRestaurants.contains(item)) return Icon(Icons.restaurant_menu);
+    if (asianRestaurants.contains(item)) return Icon(Icons.food_bank);
+    if (fastfoodRestaurants.contains(item)) return Icon(Icons.fastfood);
+    if (cafeRestaurants.contains(item)) return Icon(Icons.emoji_food_beverage);
+  }
+
+  Widget _rouletteFloatingActionBtn() {
+    return FloatingActionButton.extended(
+      backgroundColor: Colors.orange,
+      label: Text(
+        '랜덤 룰렛돌리기!',
+        style: kWhiteLabelStyle,
+      ),
+      isExtended: true,
+      onPressed: () {
+        pushRoulettePage();
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (korean && koreanRestaurants.isEmpty)
-      fetchPost(kopoModel.address + '한식');
-    if (bunsik && bunsikRestaurants.isEmpty)
-      fetchPost(kopoModel.address + '분식');
-    if (japanese && japaneseRestaurants.isEmpty)
-      fetchPost(kopoModel.address + '일식');
-    if (western && westernRestaurants.isEmpty)
-      fetchPost(kopoModel.address + '양식');
-    if (chinese && chineseRestaurants.isEmpty)
-      fetchPost(kopoModel.address + '중식');
+    if (initialized) refreshFavorites();
+
     if (favorites)
       visibleRestaurants = List.of(restaurants)
           .toSet()
@@ -494,9 +704,11 @@ class _ListScreenState extends State<ListScreen> {
           .toList();
     else
       visibleRestaurants = List.of(restaurants);
+
     if (dropdownValue == '가까운순') {
       visibleRestaurants.sort((a, b) => a.distance.compareTo(b.distance));
     }
+
     //print(favoriteRestaurants.map((e) => e.place_name));
     //print(restaurants.map((e) => e.place_name));
     //print(visibleRestaurants.map((e) => e.place_name));
@@ -536,6 +748,11 @@ class _ListScreenState extends State<ListScreen> {
                           _japaneseCheckBox(),
                           _westernCheckBox(),
                           _chineseCheckBox(),
+                          _asianCheckBox(),
+                          _fastfoodCheckBox(),
+                          _cafeCheckBox(),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.1),
                         ],
                       ),
                     ),
@@ -558,8 +775,8 @@ class _ListScreenState extends State<ListScreen> {
                     color: Colors.white,
                     child: ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: Colors.indigoAccent,
-                        child: Text(item.place_name),
+                        backgroundColor: Colors.orangeAccent.shade100,
+                        child: _itemIconBuilder(item),
                         foregroundColor: Colors.white,
                       ),
                       title: Text(item.place_name),
@@ -567,7 +784,7 @@ class _ListScreenState extends State<ListScreen> {
                     ),
                   ),
                   actionDelegate: SlideActionBuilderDelegate(
-                    actionCount: 2,
+                    actionCount: 3,
                     builder: (context, actionIndex, animation, mode) {
                       if (actionIndex == 0)
                         return IconSlideAction(
@@ -577,22 +794,28 @@ class _ListScreenState extends State<ListScreen> {
                           onTap: () => {
                             setState(() {
                               if (isfav) {
-                                favoriteRestaurants.remove(restaurants[index]);
-                                deleteFavorites();
-                                saveFavorites();
+                                favoriteRestaurants.remove(item);
                               } else {
-                                favoriteRestaurants.add(restaurants[index]);
-                                saveFavorites();
+                                if (!favoriteRestaurants.contains(item))
+                                  favoriteRestaurants.add(item);
                               }
                             }),
                           },
                         );
+                      else if (actionIndex == 1)
+                        return IconSlideAction(
+                          caption: '카카오맵',
+                          color: Colors.indigo,
+                          icon: Icons.open_in_browser,
+                          onTap: () => _launchURL(
+                              'https://place.map.kakao.com/' + item.id),
+                        );
                       else
                         return IconSlideAction(
-                          caption: '공유하기',
-                          color: Colors.indigo,
-                          icon: Icons.share,
-                          onTap: () => print('공유하기'),
+                          caption: '전화 걸기',
+                          color: Colors.green[800],
+                          icon: Icons.phone,
+                          onTap: () => _launchURL('tel:' + item.phone),
                         );
                     },
                   ),
@@ -614,16 +837,17 @@ class _ListScreenState extends State<ListScreen> {
                     child: SlidableDrawerDismissal(key: Key(item.id)),
                     onDismissed: (actionType) {
                       setState(() {
-                        Restaurant deletedItem = restaurants.removeAt(index);
+                        restaurants.remove(item);
+                        favoriteRestaurants.remove(item);
+
                         ScaffoldMessenger.of(context).removeCurrentSnackBar();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text("\"${deletedItem.place_name}\" 삭제됨"),
+                            content: Text("\"${item.place_name}\" 삭제됨"),
                             action: SnackBarAction(
                                 label: "되돌리기",
                                 onPressed: () => setState(
-                                      () => restaurants.insert(
-                                          index, deletedItem),
+                                      () => restaurants.insert(index, item),
                                     ) // this is what you needed
                                 ),
                           ),
@@ -635,33 +859,13 @@ class _ListScreenState extends State<ListScreen> {
                     },
                   ),
                 );
-                /*return Dismissible(
-                  // Each Dismissible must contain a Key. Keys allow Flutter to
-                  // uniquely identify widgets.
-                  key: Key(item),
-                  // Provide a function that tells the app
-                  // what to do after an item has been swiped away.
-                  direction: _direction,
-                  onDismissed: (direction) {
-                    // Remove the item from the data source.
-                    setState(() {
-                      restaurants.removeAt(index);
-                    });
-
-                    // Then show a snackbar.
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('$item dismissed')));
-                  },
-                  // Show a red background as the item is swiped away.
-                  background: Container(color: Colors.red),
-                  child: ListTile(title: Text('$item')),
-                );*/
               },
               childCount: visibleRestaurants.length,
             ),
           ),
         ],
       ),
+      floatingActionButton: _rouletteFloatingActionBtn(),
     );
   }
 }
