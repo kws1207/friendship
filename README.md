@@ -5,7 +5,7 @@
 두번째 앱 wheretoeat: 식당 고르기 앱
 
 
-# Mobile application as a hobby, Team friendship
+# Mobile application as a hobby, Team Friendship
 
 First app departure: Menu Ideal World Cup
 
