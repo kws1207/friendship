@@ -636,7 +636,6 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   void refreshFavorites() async {
-    print(favoriteRestaurants);
     deleteFavorites();
     saveFavorites();
   }
