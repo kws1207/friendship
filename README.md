@@ -7,6 +7,6 @@
 
 # Mobile application as a hobby, Team friendship
 
-First App Departure: Menu Ideal World Cup
+First app departure: Menu Ideal World Cup
 
-Second app wheretoeat: restaurant picker app
+Second app wheretoeat: Restaurant Selection Helper
