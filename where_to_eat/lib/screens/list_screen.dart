@@ -97,7 +97,7 @@ class _ListScreenState extends State<ListScreen> {
         MaterialPageRoute(
             builder: (context) =>
                 RouletteScreen(rouletteList: visibleRestaurants.sublist(0, 6))),
-      );
+      ).onError((error, stackTrace) => showNativeDialog(error, context));
     }
   }
 
