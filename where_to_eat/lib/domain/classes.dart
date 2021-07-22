@@ -3,6 +3,7 @@ import 'dart:math';
 
 class Restaurant {
   String place_name;
+  String address_name;
   String id;
   String x, y;
   String category_name;
@@ -11,6 +12,7 @@ class Restaurant {
 
   Restaurant(
       {this.place_name,
+      this.address_name,
       this.id,
       this.category_name,
       this.phone,
@@ -35,6 +37,12 @@ class Restaurant {
       x: json['x'] as String,
       y: json['y'] as String,
       distance: 0,
+    );
+  }
+
+  factory Restaurant.fromJsonRegion(Map<String, dynamic> json) {
+    return Restaurant(
+      address_name: json['address_name'] as String,
     );
   }
 

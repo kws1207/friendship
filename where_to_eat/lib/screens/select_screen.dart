@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:where_to_eat/utilities/constants.dart';
 import 'package:where_to_eat/domain/classes.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,8 +9,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:where_to_eat/screens/list_screen.dart';
 import 'package:kopo/kopo.dart';
 import 'package:where_to_eat/utilities/functions.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class SelectScreen extends StatefulWidget {
   final String uid;
@@ -28,9 +30,8 @@ class _SelectScreenState extends State<SelectScreen> {
   final String uid;
   static final storage = FlutterSecureStorage();
   final locationController = TextEditingController();
-  KopoModel kopoModel = KopoModel(address: '서울 강남구 가로수길 5');
-  List<Placemark> _newPlace;
-  Placemark currentPlace;
+  KopoModel kopoModel = null;
+  Restaurant currentLocation;
 
   _SelectScreenState(this.uid);
 
@@ -171,9 +172,9 @@ class _SelectScreenState extends State<SelectScreen> {
         elevation: 5.0,
         onPressed: () async {
           await _getCurrentLocation();
-          print(currentPlace.street);
+          print(currentLocation.address_name);
           kopoModel = KopoModel(
-            address: currentPlace.name,
+            address: currentLocation.address_name,
           );
         },
         //navigationPage();
@@ -223,10 +224,28 @@ class _SelectScreenState extends State<SelectScreen> {
     );
     print(position.latitude);
     print(position.longitude);
-    _newPlace =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+    await _getLocationFromCoordinates(
+        position.latitude.toString(), position.longitude.toString());
+  }
+
+  void _getLocationFromCoordinates(String latitude, String longitude) async {
+    var url = Uri.parse(
+        'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=' +
+            longitude +
+            '&y=' +
+            latitude);
+
+    var response = await http.post(url,
+        headers: {'Authorization': 'KakaoAK f7fe1cb54eecf69fc022ce8035f1e369'});
+
+    print(response.body);
+    final parsed =
+        json.decode(response.body)["documents"].cast<Map<String, dynamic>>();
+
     setState(() {
-      currentPlace = _newPlace[0];
+      currentLocation = parsed
+          .map<Restaurant>((json) => Restaurant.fromJsonRegion(json))
+          .toList()[0];
     });
   }
 
