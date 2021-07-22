@@ -11,6 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:where_to_eat/screens/roulette_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:where_to_eat/utilities/functions.dart';
 
 class ListScreen extends StatefulWidget {
   final String uid;
@@ -98,7 +99,7 @@ class _ListScreenState extends State<ListScreen> {
         MaterialPageRoute(
             builder: (context) =>
                 RouletteScreen(rouletteList: visibleRestaurants.sublist(0, 6))),
-      );
+      ).onError((error, stackTrace) => showNativeDialog(error, context));
     }
   }
 

@@ -28,7 +28,7 @@ class _SelectScreenState extends State<SelectScreen> {
   final String uid;
   static final storage = FlutterSecureStorage();
   final locationController = TextEditingController();
-  KopoModel kopoModel = null;
+  KopoModel kopoModel = KopoModel(address: '서울 강남구 가로수길 5');
   List<Placemark> _newPlace;
   Placemark currentPlace;
 

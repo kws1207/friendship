@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:where_to_eat/utilities/constants.dart';
 import 'package:flutter_spinning_wheel/flutter_spinning_wheel.dart';
 import 'package:where_to_eat/domain/classes.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RouletteScreen extends StatelessWidget {
   final List<Restaurant> rouletteList;
@@ -21,7 +22,29 @@ class RouletteScreen extends StatelessWidget {
     _dividerController.close();
   }
 
+  void _launchURL(String url) async {
+    //print(url);
+    if (await canLaunch(Uri.encodeFull(url))) {
+      await launch(Uri.encodeFull(url));
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   Widget rouletteScore(int selected) {
+    return GestureDetector(
+      onTap: () => _launchURL(
+          'https://place.map.kakao.com/' + rouletteList[selected - 1].id),
+      child: RichText(
+        text: TextSpan(
+          text: '카카오맵에서 열기',
+          style: kBlackLabelStyle,
+        ),
+      ),
+    );
+  }
+
+  Widget selectedLabel(int selected) {
     return Text(
       '${labels[selected]}',
       style: kNameStyle,
@@ -61,11 +84,19 @@ class RouletteScreen extends StatelessWidget {
               secondaryImageHeight: 90,
               secondaryImageWidth: 90,
             ),
-            SizedBox(height: 30),
+            SizedBox(height: 40),
             StreamBuilder(
               stream: _dividerController.stream,
-              builder: (context, snapshot) =>
-                  snapshot.hasData ? rouletteScore(snapshot.data) : Container(),
+              builder: (context, snapshot) => snapshot.hasData
+                  ? //selectedLabel(snapshot.data)
+                  Column(
+                      children: [
+                        selectedLabel(snapshot.data),
+                        SizedBox(height: 20),
+                        rouletteScore(snapshot.data)
+                      ],
+                    )
+                  : Container(),
             ),
           ],
         ),
