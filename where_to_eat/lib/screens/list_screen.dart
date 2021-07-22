@@ -97,7 +97,7 @@ class _ListScreenState extends State<ListScreen> {
         MaterialPageRoute(
             builder: (context) =>
                 RouletteScreen(rouletteList: visibleRestaurants.sublist(0, 6))),
-      ).onError((error, stackTrace) => showNativeDialog(error, context));
+      );
     }
   }
 
@@ -607,8 +607,8 @@ class _ListScreenState extends State<ListScreen> {
     setState(() {
       currentLocation = position;
     });
-    print(currentLocation.latitude);
-    print(currentLocation.longitude);
+    //print(currentLocation.latitude);
+    //print(currentLocation.longitude);
   }
 
   void saveFavorites() async {
