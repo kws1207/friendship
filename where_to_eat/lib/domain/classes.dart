@@ -1,3 +1,4 @@
+import 'package:geolocator/geolocator.dart';
 import 'package:quiver/core.dart';
 import 'dart:math';
 
@@ -47,7 +48,7 @@ class Restaurant {
   }
 
   factory Restaurant.fromJson(
-      Map<String, dynamic> json, Restaurant kopoLocation) {
+      Map<String, dynamic> json, Position currentLocation) {
     String _x = json['x'] as String;
     String _y = json['y'] as String;
     return Restaurant(
@@ -57,8 +58,8 @@ class Restaurant {
       phone: json['phone'] as String,
       x: _x,
       y: _y,
-      distance: pow(num.parse(kopoLocation.x) - num.parse(_x), 2) +
-          pow(num.parse(kopoLocation.y) - num.parse(_y), 2),
+      distance: pow(currentLocation.longitude - num.parse(_x), 2) +
+          pow(currentLocation.latitude - num.parse(_y), 2),
     );
   }
 }

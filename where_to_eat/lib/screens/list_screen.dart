@@ -11,6 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:where_to_eat/screens/roulette_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:where_to_eat/utilities/functions.dart';
 
 class ListScreen extends StatefulWidget {
   final String uid;
@@ -30,7 +31,6 @@ class _ListScreenState extends State<ListScreen> {
   final String uid;
   final KopoModel kopoModel;
   String dropdownValue = '기본순';
-  Restaurant kopoLocation;
   Position currentLocation;
   bool favorites, initialized;
   bool korean, bunsik, japanese, western, chinese, asian, fastfood, cafe;
@@ -75,8 +75,7 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   void asyncMethod() async {
-    kopoLocation = null;
-    await getKopoLocation();
+    await getCurrentLocation();
     await loadFavorites();
     await fetchPost(kopoModel.address + ' 한식');
     await fetchPost(kopoModel.address + ' 분식');
@@ -91,7 +90,7 @@ class _ListScreenState extends State<ListScreen> {
 
   void pushRoulettePage() {
     if (visibleRestaurants.length < 6) {
-      print("Not enough items!");
+      showNativeDialog('메뉴 개수가 부족합니다. (6개 필요)', context);
     } else {
       Navigator.push(
         context,
@@ -530,8 +529,10 @@ class _ListScreenState extends State<ListScreen> {
     final parsed =
         json.decode(responseBody)["documents"].cast<Map<String, dynamic>>();
 
+    getCurrentLocation();
+
     return parsed
-        .map<Restaurant>((json) => Restaurant.fromJson(json, kopoLocation))
+        .map<Restaurant>((json) => Restaurant.fromJson(json, currentLocation))
         .toList();
   }
 
@@ -578,6 +579,7 @@ class _ListScreenState extends State<ListScreen> {
     }
   }
 
+  /*
   Future<http.Response> getKopoLocation() async {
     var url = Uri.parse(
         'https://dapi.kakao.com/v2/local/search/keyword.json?query=' +
@@ -596,6 +598,7 @@ class _ListScreenState extends State<ListScreen> {
       kopoLocation = list.first;
     });
   }
+  */
 
   void getCurrentLocation() async {
     Position position = await Geolocator.getCurrentPosition(
