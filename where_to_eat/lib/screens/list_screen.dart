@@ -495,7 +495,8 @@ class _ListScreenState extends State<ListScreen> {
         height: 2,
         color: Colors.orangeAccent,
       ),
-      onChanged: (String newValue) {
+      onChanged: (String newValue) async {
+        await getCurrentLocation();
         setState(() {
           dropdownValue = newValue;
           if (favorites)
@@ -664,7 +665,10 @@ class _ListScreenState extends State<ListScreen> {
         initialized = true;
       });
       //print(e['place_name']);
-    }).onError((error, stackTrace) => null);
+    }).onError((error, stackTrace) {
+      print('failed to load favorites');
+      initialized = true;
+    });
   }
 
   Widget _itemIconBuilder(Restaurant item) {
@@ -695,7 +699,6 @@ class _ListScreenState extends State<ListScreen> {
   @override
   Widget build(BuildContext context) {
     if (initialized) refreshFavorites();
-
     if (favorites)
       visibleRestaurants = List.of(restaurants)
           .toSet()

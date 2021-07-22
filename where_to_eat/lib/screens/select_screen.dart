@@ -7,6 +7,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:where_to_eat/screens/list_screen.dart';
 import 'package:kopo/kopo.dart';
+import 'package:where_to_eat/utilities/functions.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 
 class SelectScreen extends StatefulWidget {
   final String uid;
@@ -26,6 +29,8 @@ class _SelectScreenState extends State<SelectScreen> {
   static final storage = FlutterSecureStorage();
   final locationController = TextEditingController();
   KopoModel kopoModel = null;
+  List<Placemark> _newPlace;
+  Placemark currentPlace;
 
   _SelectScreenState(this.uid);
 
@@ -107,14 +112,15 @@ class _SelectScreenState extends State<SelectScreen> {
   }
 
   void navigationPage() {
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-      //new
-      settings: const RouteSettings(name: '/ListScreen'),
-      builder: (context) => ListScreen(
-        uid: uid,
-        kopoModel: kopoModel,
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ListScreen(
+          uid: uid,
+          kopoModel: kopoModel,
+        ),
       ),
-    ));
+    );
   }
 
   void navigationToSignInPage() {
@@ -138,7 +144,7 @@ class _SelectScreenState extends State<SelectScreen> {
               storage.delete(key: 'uid');
               navigationToSignInPage();
             },
-            onError: (error) => _showSignOutFailDialog(),
+            onError: (error) => showNativeDialog(error, context),
           );
         },
         padding: EdgeInsets.all(15.0),
@@ -148,6 +154,36 @@ class _SelectScreenState extends State<SelectScreen> {
         color: Colors.orange[300],
         child: Text(
           '로그아웃',
+          style: kWhiteLabelStyle,
+        ),
+      ),
+    );
+  }
+
+  Widget _searchCurrentLocationBtn() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.width * 0.03,
+      ),
+      width: double.infinity,
+      // ignore: deprecated_member_use
+      child: RaisedButton(
+        elevation: 5.0,
+        onPressed: () async {
+          await _getCurrentLocation();
+          print(currentPlace.street);
+          kopoModel = KopoModel(
+            address: currentPlace.name,
+          );
+        },
+        //navigationPage();
+        padding: EdgeInsets.all(15.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        color: Colors.orangeAccent,
+        child: Text(
+          '현위치',
           style: kWhiteLabelStyle,
         ),
       ),
@@ -181,6 +217,19 @@ class _SelectScreenState extends State<SelectScreen> {
     );
   }
 
+  void _getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    print(position.latitude);
+    print(position.longitude);
+    _newPlace =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    setState(() {
+      currentPlace = _newPlace[0];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     print(uid);
@@ -208,6 +257,7 @@ class _SelectScreenState extends State<SelectScreen> {
                   _searchLocationTF(),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.04),
                   // 시작 버튼
+                  _searchCurrentLocationBtn(),
                   _searchRestaurantBtn(),
                   _buildSignOutBtn(),
                 ],
