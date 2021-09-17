@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:kopo/kopo.dart';
+import 'package:kpostal/kpostal.dart';
+import 'package:kpostal/src/kpostal_model.dart';
 import 'package:where_to_eat/utilities/constants.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:where_to_eat/domain/classes.dart';
@@ -15,7 +16,7 @@ import 'package:where_to_eat/utilities/functions.dart';
 
 class ListScreen extends StatefulWidget {
   final String uid;
-  final KopoModel kopoModel;
+  final Kpostal kopoModel;
 
   const ListScreen({
     Key key,
@@ -29,7 +30,7 @@ class ListScreen extends StatefulWidget {
 
 class _ListScreenState extends State<ListScreen> {
   final String uid;
-  final KopoModel kopoModel;
+  final Kpostal kopoModel;
   String dropdownValue = '기본순';
   Position currentLocation;
   bool favorites, initialized;
@@ -92,12 +93,13 @@ class _ListScreenState extends State<ListScreen> {
     if (visibleRestaurants.length < 6) {
       showNativeDialog('메뉴 개수가 부족합니다. (6개 필요)', context);
     } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                RouletteScreen(rouletteList: visibleRestaurants.sublist(0, 6))),
-      );
+      Navigator.push(context, MaterialPageRoute(builder: (context) {
+        List<Restaurant> rouletteRestaurants =
+            List<Restaurant>.from(visibleRestaurants);
+        rouletteRestaurants.shuffle();
+        print(rouletteRestaurants.sublist(0, 6).map((e) => e.place_name));
+        return RouletteScreen(rouletteList: rouletteRestaurants.sublist(0, 6));
+      }));
     }
   }
 
@@ -630,13 +632,17 @@ class _ListScreenState extends State<ListScreen> {
             ])
           },
           SetOptions(merge: true),
-        );
+        ).onError((error, stackTrace) => null);
       },
     );
   }
 
   void deleteFavorites() async {
-    await FirebaseFirestore.instance.collection('favorites').doc(uid).delete();
+    await FirebaseFirestore.instance
+        .collection('favorites')
+        .doc(uid)
+        .delete()
+        .onError((error, stackTrace) => null);
   }
 
   void refreshFavorites() async {

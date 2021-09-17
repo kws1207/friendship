@@ -9,7 +9,9 @@
       android:name="com.kakao.sdk.AppKey" android:value="b3fb88ef9a08b3dc2d98d65af61c4581"
       />
    <application
-        android:label="where_to_eat">
+        android:label="어디갈랭"
+        android:usesCleartextTraffic="true"
+        >
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

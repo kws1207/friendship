@@ -7,7 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:where_to_eat/screens/list_screen.dart';
-import 'package:kopo/kopo.dart';
+import 'package:kpostal/kpostal.dart';
+import 'package:kpostal/src/kpostal_model.dart';
 import 'package:where_to_eat/utilities/functions.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -30,7 +31,7 @@ class _SelectScreenState extends State<SelectScreen> {
   final String uid;
   static final storage = FlutterSecureStorage();
   final locationController = TextEditingController();
-  KopoModel kopoModel = null;
+  Kpostal kopoModel = null;
   Restaurant currentLocation;
 
   _SelectScreenState(this.uid);
@@ -55,10 +56,10 @@ class _SelectScreenState extends State<SelectScreen> {
           height: MediaQuery.of(context).size.height * 0.07,
           child: InkWell(
             onTap: () async {
-              KopoModel model = await Navigator.push(
+              Kpostal model = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => Kopo(),
+                  builder: (context) => KpostalView(),
                 ),
               );
               if (model != null) {
@@ -173,7 +174,7 @@ class _SelectScreenState extends State<SelectScreen> {
         onPressed: () async {
           await _getCurrentLocation();
           print(currentLocation.address_name);
-          kopoModel = KopoModel(
+          kopoModel = Kpostal(
             address: currentLocation.address_name,
           );
         },
