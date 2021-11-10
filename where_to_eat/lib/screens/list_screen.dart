@@ -56,6 +56,8 @@ class _ListScreenState extends State<ListScreen> {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
 
+  bool _isListLoading = false;
+
   _ListScreenState(this.uid, this.kopoModel);
 
   @override
@@ -76,6 +78,9 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   void asyncMethod() async {
+    setState(() {
+      _isListLoading = true;
+    });
     await getCurrentLocation();
     await loadFavorites();
     await fetchPost(kopoModel.address + ' 한식');
@@ -86,7 +91,9 @@ class _ListScreenState extends State<ListScreen> {
     await fetchPost(kopoModel.address + ' 아시아음식');
     await fetchPost(kopoModel.address + ' 패스트푸드');
     await fetchPost(kopoModel.address + ' 카페');
-    setState(() {});
+    setState(() {
+      _isListLoading = false;
+    });
   }
 
   void pushRoulettePage() {
@@ -724,159 +731,169 @@ class _ListScreenState extends State<ListScreen> {
     //print(restaurants.map((e) => e.place_name));
     //print(visibleRestaurants.map((e) => e.place_name));
 
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            pinned: _pinned,
-            snap: _snap,
-            floating: _floating,
-            backgroundColor: Colors.orange,
-            title: Text(
-              '식당 골라보쇼',
-              style: kWhiteLabelStyle,
+    if (_isListLoading) {
+      return Container(
+        color: Colors.white,
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    } else {
+      return Scaffold(
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              pinned: _pinned,
+              snap: _snap,
+              floating: _floating,
+              backgroundColor: Colors.orange,
+              title: Text(
+                '식당 골라보쇼',
+                style: kWhiteLabelStyle,
+              ),
             ),
-          ),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 100,
-              child: Container(
-                child: Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        _favoritesCheckBox(),
-                        SizedBox(width: 20),
-                        _buildDropdownBtn(),
-                      ],
-                    ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 100,
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      Row(
                         children: <Widget>[
-                          _koreanCheckBox(),
-                          _bunsikCheckBox(),
-                          _japaneseCheckBox(),
-                          _westernCheckBox(),
-                          _chineseCheckBox(),
-                          _asianCheckBox(),
-                          _fastfoodCheckBox(),
-                          _cafeCheckBox(),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.1),
+                          _favoritesCheckBox(),
+                          SizedBox(width: 20),
+                          _buildDropdownBtn(),
                         ],
                       ),
-                    ),
-                  ],
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: <Widget>[
+                            _koreanCheckBox(),
+                            _bunsikCheckBox(),
+                            _japaneseCheckBox(),
+                            _westernCheckBox(),
+                            _chineseCheckBox(),
+                            _asianCheckBox(),
+                            _fastfoodCheckBox(),
+                            _cafeCheckBox(),
+                            SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.1),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                final item = visibleRestaurants[index];
-                final isfav = favoriteRestaurants.any((e) => (e.id == item.id));
-                return Slidable.builder(
-                  key: Key(item.id),
-                  controller: slidableController,
-                  actionPane: SlidableDrawerActionPane(),
-                  actionExtentRatio: 0.25,
-                  child: Container(
-                    color: Colors.white,
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.orangeAccent.shade100,
-                        child: _itemIconBuilder(item),
-                        foregroundColor: Colors.white,
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  final item = visibleRestaurants[index];
+                  final isfav =
+                      favoriteRestaurants.any((e) => (e.id == item.id));
+                  return Slidable.builder(
+                    key: Key(item.id),
+                    controller: slidableController,
+                    actionPane: SlidableDrawerActionPane(),
+                    actionExtentRatio: 0.25,
+                    child: Container(
+                      color: Colors.white,
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.orangeAccent.shade100,
+                          child: _itemIconBuilder(item),
+                          foregroundColor: Colors.white,
+                        ),
+                        title: Text(item.place_name),
+                        subtitle: Text(item.category_name),
                       ),
-                      title: Text(item.place_name),
-                      subtitle: Text(item.category_name),
                     ),
-                  ),
-                  actionDelegate: SlideActionBuilderDelegate(
-                    actionCount: 3,
-                    builder: (context, actionIndex, animation, mode) {
-                      if (actionIndex == 0)
+                    actionDelegate: SlideActionBuilderDelegate(
+                      actionCount: 3,
+                      builder: (context, actionIndex, animation, mode) {
+                        if (actionIndex == 0)
+                          return IconSlideAction(
+                            caption: '찜하기',
+                            color: Colors.blue,
+                            icon: isfav ? Icons.star : Icons.star_border,
+                            onTap: () => {
+                              setState(() {
+                                if (isfav) {
+                                  favoriteRestaurants.remove(item);
+                                } else {
+                                  if (!favoriteRestaurants.contains(item))
+                                    favoriteRestaurants.add(item);
+                                }
+                              }),
+                            },
+                          );
+                        else if (actionIndex == 1)
+                          return IconSlideAction(
+                            caption: '카카오맵',
+                            color: Colors.indigo,
+                            icon: Icons.open_in_browser,
+                            onTap: () => _launchURL(
+                                'https://place.map.kakao.com/' + item.id),
+                          );
+                        else
+                          return IconSlideAction(
+                            caption: '전화 걸기',
+                            color: Colors.green[800],
+                            icon: Icons.phone,
+                            onTap: () => _launchURL('tel:' + item.phone),
+                          );
+                      },
+                    ),
+                    secondaryActionDelegate: SlideActionBuilderDelegate(
+                      actionCount: 1,
+                      builder: (context, actionIndex, animation, mode) {
                         return IconSlideAction(
-                          caption: '찜하기',
-                          color: Colors.blue,
-                          icon: isfav ? Icons.star : Icons.star_border,
-                          onTap: () => {
-                            setState(() {
-                              if (isfav) {
-                                favoriteRestaurants.remove(item);
-                              } else {
-                                if (!favoriteRestaurants.contains(item))
-                                  favoriteRestaurants.add(item);
-                              }
-                            }),
+                          caption: '숨기기',
+                          color: Colors.red,
+                          icon: Icons.delete,
+                          onTap: () async {
+                            var state = Slidable.of(context);
+                            state.dismiss();
                           },
                         );
-                      else if (actionIndex == 1)
-                        return IconSlideAction(
-                          caption: '카카오맵',
-                          color: Colors.indigo,
-                          icon: Icons.open_in_browser,
-                          onTap: () => _launchURL(
-                              'https://place.map.kakao.com/' + item.id),
-                        );
-                      else
-                        return IconSlideAction(
-                          caption: '전화 걸기',
-                          color: Colors.green[800],
-                          icon: Icons.phone,
-                          onTap: () => _launchURL('tel:' + item.phone),
-                        );
-                    },
-                  ),
-                  secondaryActionDelegate: SlideActionBuilderDelegate(
-                    actionCount: 1,
-                    builder: (context, actionIndex, animation, mode) {
-                      return IconSlideAction(
-                        caption: '숨기기',
-                        color: Colors.red,
-                        icon: Icons.delete,
-                        onTap: () async {
-                          var state = Slidable.of(context);
-                          state.dismiss();
-                        },
-                      );
-                    },
-                  ),
-                  dismissal: SlidableDismissal(
-                    child: SlidableDrawerDismissal(key: Key(item.id)),
-                    onDismissed: (actionType) {
-                      setState(() {
-                        restaurants.remove(item);
-                        favoriteRestaurants.remove(item);
+                      },
+                    ),
+                    dismissal: SlidableDismissal(
+                      child: SlidableDrawerDismissal(key: Key(item.id)),
+                      onDismissed: (actionType) {
+                        setState(() {
+                          restaurants.remove(item);
+                          favoriteRestaurants.remove(item);
 
-                        ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("\"${item.place_name}\" 삭제됨"),
-                            action: SnackBarAction(
-                                label: "되돌리기",
-                                onPressed: () => setState(
-                                      () => restaurants.insert(index, item),
-                                    ) // this is what you needed
-                                ),
-                          ),
-                        );
-                      });
-                    },
-                    dismissThresholds: <SlideActionType, double>{
-                      SlideActionType.primary: 1.0
-                    },
-                  ),
-                );
-              },
-              childCount: visibleRestaurants.length,
+                          ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text("\"${item.place_name}\" 삭제됨"),
+                              action: SnackBarAction(
+                                  label: "되돌리기",
+                                  onPressed: () => setState(
+                                        () => restaurants.insert(index, item),
+                                      ) // this is what you needed
+                                  ),
+                            ),
+                          );
+                        });
+                      },
+                      dismissThresholds: <SlideActionType, double>{
+                        SlideActionType.primary: 1.0
+                      },
+                    ),
+                  );
+                },
+                childCount: visibleRestaurants.length,
+              ),
             ),
-          ),
-        ],
-      ),
-      floatingActionButton: _rouletteFloatingActionBtn(),
-    );
+          ],
+        ),
+        floatingActionButton: _rouletteFloatingActionBtn(),
+      );
+    }
   }
 }

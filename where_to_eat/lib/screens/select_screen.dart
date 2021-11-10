@@ -34,6 +34,8 @@ class _SelectScreenState extends State<SelectScreen> {
   Kpostal kopoModel = null;
   Restaurant currentLocation;
 
+  bool _isLocationLoading = false;
+
   _SelectScreenState(this.uid);
 
   @override
@@ -172,11 +174,17 @@ class _SelectScreenState extends State<SelectScreen> {
       child: RaisedButton(
         elevation: 5.0,
         onPressed: () async {
+          setState(() {
+            _isLocationLoading = true;
+          });
           await _getCurrentLocation();
           print(currentLocation.address_name);
           kopoModel = Kpostal(
             address: currentLocation.address_name,
           );
+          setState(() {
+            _isLocationLoading = false;
+          });
         },
         //navigationPage();
         padding: EdgeInsets.all(15.0),
@@ -220,11 +228,47 @@ class _SelectScreenState extends State<SelectScreen> {
   }
 
   void _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      print('Location services are disabled.');
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        print('Location permissions are denied');
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      print(
+          'Location permissions are permanently denied, we cannot request permissions.');
+      return;
+    }
+
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
+
     print(position.latitude);
     print(position.longitude);
+
     await _getLocationFromCoordinates(
         position.latitude.toString(), position.longitude.toString());
   }
@@ -253,39 +297,48 @@ class _SelectScreenState extends State<SelectScreen> {
   @override
   Widget build(BuildContext context) {
     print(uid);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.orange,
-        title: Text(
-          '어디갈랭',
-          style: kWhiteLabelStyle,
+    if (_isLocationLoading) {
+      return Container(
+        color: Colors.white,
+        child: Center(
+          child: CircularProgressIndicator(),
         ),
-      ),
-      body: Stack(
-        children: <Widget>[
-          Container(
-            height: double.infinity,
-            child: SingleChildScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.symmetric(
-                horizontal: MediaQuery.of(context).size.height * 0.05,
-                vertical: MediaQuery.of(context).size.height * 0.11,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  _searchLocationTF(),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                  // 시작 버튼
-                  _searchCurrentLocationBtn(),
-                  _searchRestaurantBtn(),
-                  _buildSignOutBtn(),
-                ],
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.orange,
+          title: Text(
+            '어디갈랭',
+            style: kWhiteLabelStyle,
+          ),
+        ),
+        body: Stack(
+          children: <Widget>[
+            Container(
+              height: double.infinity,
+              child: SingleChildScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.height * 0.05,
+                  vertical: MediaQuery.of(context).size.height * 0.11,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    _searchLocationTF(),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                    // 시작 버튼
+                    _searchCurrentLocationBtn(),
+                    _searchRestaurantBtn(),
+                    _buildSignOutBtn(),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    }
   }
 }
