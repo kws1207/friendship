@@ -179,6 +179,7 @@ class _SelectScreenState extends State<SelectScreen> {
           });
           await _getCurrentLocation();
           print(currentLocation.address_name);
+          // ignore: missing_required_param
           kopoModel = Kpostal(
             address: currentLocation.address_name,
           );

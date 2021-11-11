@@ -545,7 +545,7 @@ class _ListScreenState extends State<ListScreen> {
         .toList();
   }
 
-  Future<http.Response> fetchPost(String place) async {
+  void fetchPost(String place) async {
     print('fetchpost: ' + place);
     var url = Uri.parse(
         'https://dapi.kakao.com/v2/local/search/keyword.json?query=' + place);
@@ -696,6 +696,7 @@ class _ListScreenState extends State<ListScreen> {
     if (asianRestaurants.contains(item)) return Icon(Icons.food_bank);
     if (fastfoodRestaurants.contains(item)) return Icon(Icons.fastfood);
     if (cafeRestaurants.contains(item)) return Icon(Icons.emoji_food_beverage);
+    return Icon(Icons.error);
   }
 
   Widget _rouletteFloatingActionBtn() {
